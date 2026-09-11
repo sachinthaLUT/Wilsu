@@ -1,9 +1,0 @@
-# Old wilsu.fi addresses point to the new pages
-/index.php         /                       301
-/seurainfo.php     /#seura                 301
-/juniorit.php      /#pelaa                 301
-/jasenlomake.php   /#jasenyys              301
-/jasenedut.php     /#jasenyys              301
-/galleria.php      /#galleria              301
-/linkit.php        /#linkit                301
-/yhteystiedot.php  /#jasenyys              301
