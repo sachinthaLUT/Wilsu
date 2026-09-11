@@ -13,7 +13,7 @@
 const SETTINGS = {
   /* Club logo. Put the file in the assets folder (logo.svg or logo.png) and write its name here,
      or paste a Google Drive share link. Leave empty to use the built-in shuttle mark. */
-  logo: "",
+  logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDyZTixQuhAVy_Gijt0l467dY3oTUUzlrAcULmY3yUefMGRhPrd4cpTMw&s=10",
 
   /* Google Form for membership applications. Paste the form's share link here. */
   membershipForm: "",
