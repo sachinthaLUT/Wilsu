@@ -24,11 +24,11 @@ const SETTINGS = {
 };
 
 const SHEETS = {
-  schedule:      "",   // Vuorot
-  cancellations: "",   // Peruutukset
-  news:          "",   // Uutiset
-  events:        "",   // Tapahtumat
-  gallery:       ""    // Galleria
+  schedule:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1610182645&single=true&output=csv",   // Vuorot
+  cancellations: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=623488143&single=true&output=csv",   // Peruutukset
+  news:          "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=900805977&single=true&output=csv",   // Uutiset
+  events:        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1195664895&single=true&output=csv",   // Tapahtumat
+  gallery:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1016504809&single=true&output=csv"    // Galleria
 };
 
 const VENUES = {
