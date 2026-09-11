@@ -36,13 +36,13 @@ const SETTINGS = {
 };
 
 const SHEETS = {
-  schedule:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1610182645&single=true&output=csv",   // Vuorot
-  cancellations: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=623488143&single=true&output=csv",   // Peruutukset
-  news:          "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=900805977&single=true&output=csv",   // Uutiset
-  events:        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1195664895&single=true&output=csv",   // Tapahtumat
-  gallery:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1016504809&single=true&output=csv",   // Galleria
-  faq:           "",   // UKK (new tab)
-  board:         ""    // Hallitus (new tab)
+  schedule:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1561646268&single=true&output=csv",   // Vuorot
+  cancellations: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1308069276&single=true&output=csv",   // Peruutukset
+  news:          "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1010366994&single=true&output=csv",   // Uutiset
+  events:        "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1366506154&single=true&output=csv",   // Tapahtumat
+  gallery:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=672631943&single=true&output=csv",   // Galleria
+  faq:           "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=675361153&single=true&output=csv",   // UKK (new tab)
+  board:         "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1160483995&single=true&output=csv"    // Hallitus (new tab)
 };
 
 const VENUES = {
