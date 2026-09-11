@@ -70,7 +70,7 @@ const DEFAULT_CONTENT = {
     { date:"2026-04-20", cat:"Seuraelämä", title:"Kausi huipentuu sulanrepijäisiin",
       summary:"Aikuisten pelit ja ilta LUTin rantasaunalla, junnuille omat kisat ja iltapala.",
       body:"Aikuisten sulanrepijäiset vietetään lauantaina 16.5. LUTin rantasaunalla. Sulanrepijäispelit pelataan perjantaina 15.5.\n\nJunioreiden kausi päättyy maanantaina 18.5. pieniin kisoihin ja yhteiseen ruokailuun. Vuoro alkaa normaalisti klo 17.30 ja päättyy noin klo 20. Jos et osallistu ruokailuun, voit lähteä kotiin pelien jälkeen klo 19.",
-      image:"https://www.visitfinland.com/.imaging/mte/visit-finland-theme/lgUpW/dam/vf/Seasons/Spring/Visit_-land_web-DSC_4933_optimized.jpg/jcr:content/Visit_%C3%85land_web-DSC_4933_optimized.jpg", caption:"Treenivuoro Huhtiniemessä. Kuva: Tomi Karttunen" },
+      image:"https://drive.google.com/file/d/1c0LjaGN9UxB6kymzls-zl1sQyxAdHvh8/view?usp=sharing", caption:"Treenivuoro Huhtiniemessä. Kuva: Tomi Karttunen" },
     { date:"2026-03-17", cat:"Ranking", title:"Silja nousi Suomen top 8:aan",
       summary:"Naisten kaksinpelin rankinglistalla sijoitus on nyt kahdeksas.",
       body:"Silja Soikkeli nousi sijalle 8 Suomen naisten kaksinpelin rankinglistalla. Rankingit löytyvät Sulkapalloliiton kisapalvelusta: https://badmintonfinland.tournamentsoftware.com",
