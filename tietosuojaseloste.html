@@ -5,8 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tietosuojaseloste – Willimiehen Sulka</title>
 <meta name="description" content="Willimiehen Sulka ry:n jäsenrekisterin ja verkkosivujen tietosuojaseloste.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Willimiehen Sulka">
+<meta property="og:locale" content="fi_FI">
+<meta property="og:title" content="Tietosuojaseloste – Willimiehen Sulka">
+<meta property="og:description" content="Willimiehen Sulka ry:n tietosuojaseloste.">
+<meta property="og:url" content="https://sachinthalut.github.io/Wilsu/tietosuojaseloste.html">
+<meta property="og:image" content="https://sachinthalut.github.io/Wilsu/assets/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Willimiehen Sulka – sulkapalloa Lappeenrannassa">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0B3B2E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23F5D547'/%3E%3Cpath d='M13 12 L20 29 L27 12' fill='none' stroke='%230B3B2E' stroke-width='3.2'/%3E%3Ccircle cx='20' cy='30' r='3.2' fill='%230B3B2E'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="assets/WilsuLogo.png">
 <link rel="preload" href="assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -36,6 +48,7 @@
     <li>Nimi, syntymäaika, osoite, puhelinnumero ja sähköposti</li>
     <li>Alle 18-vuotiaan huoltajan nimi ja yhteystiedot</li>
     <li>Harjoitusryhmä, jäsenmaksujen tiedot ja mahdollinen Forever-jäsenyys</li>
+    <li>Hallituksen jäsenten nimet, roolit ja kuvat verkkosivuilla</li>
     <li>Tapahtumailmoittautumisten tiedot, kuten nimi, yhteystiedot ja erityisruokavalio</li>
     <li>Vapaaehtoisesti kerrottu pelikokemus ja aiemmat seurat</li>
     <li>Kuvauslupa</li>
@@ -56,7 +69,7 @@
   <p>Tietoja säilytetään jäsenyyden ajan. Jäsenyyden päätyttyä tiedot poistetaan [kahden vuoden] kuluessa, ellei kirjanpitolaki edellytä pidempää säilytystä laskutustietojen osalta.</p>
 
   <h2>Verkkosivujen evästeet ja seuranta</h2>
-  <p>Sivusto ei käytä seurantaevästeitä eikä mainontaa. Fontit ladataan sivuston omalta palvelimelta. Sivuston kuvat ja sisältö voidaan ladata Googlen palveluista, jolloin selaimesi on yhteydessä Googleen. Karttalinkit avaavat Google Mapsin vasta, kun napautat niitä.</p>
+  <p>Sivusto ei käytä seurantaevästeitä eikä mainontaa. Kävijämääriä seurataan GoatCounter-palvelulla, joka ei käytä evästeitä eikä tallenna tunnistettavia tietoja. Fontit ladataan sivuston omalta palvelimelta. Sivuston kuvat ja sisältö voidaan ladata Googlen palveluista, jolloin selaimesi on yhteydessä Googleen. Karttalinkit avaavat Google Mapsin vasta, kun napautat niitä.</p>
 
   <h2>Oikeutesi</h2>
   <p>Sinulla on oikeus tarkastaa tietosi, pyytää niiden korjaamista tai poistamista ja vastustaa käsittelyä. Pyynnöt osoitteeseen puheenjohtaja@wilsu.fi. Voit myös tehdä valituksen tietosuojavaltuutetulle (<a href="https://tietosuoja.fi">tietosuoja.fi</a>).</p>
@@ -64,7 +77,8 @@
 </div>
 </main>
 <script src="assets/content.js"></script>
+<script src="assets/i18n.js"></script>
 <script src="assets/site.js"></script>
-<script>renderChrome("");</script>
+<script>renderChrome(""); if (EN_ON){ const n = document.createElement("p"); n.className = "note"; n.style.marginBottom = "1rem"; n.textContent = "This privacy policy is available in Finnish only. Questions: puheenjohtaja@wilsu.fi"; n.setAttribute("data-keep",""); document.querySelector(".legal-doc").prepend(n); }</script>
 </body>
 </html>

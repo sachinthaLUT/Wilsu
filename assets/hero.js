@@ -1,5 +1,5 @@
-/* Hero animation: 3D badminton rally. Self-contained, no settings to edit. */
-(function(){
+/* Hero animation: 3D badminton rally. Started by home.js when SETTINGS.hero is "animation". */
+function startHeroAnimation(){
 
 /* ---------- World in metres. Net at y = 0, near baseline y = -6.7, up = z ---------- */
 const NS = "http://www.w3.org/2000/svg";
@@ -223,4 +223,4 @@ function frame(now){
 LINES.forEach(l => requestAnimationFrame(() => l.el.style.opacity = 1));
 requestAnimationFrame(frame);
 
-})();
+}

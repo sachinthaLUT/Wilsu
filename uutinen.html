@@ -5,8 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Uutinen – Willimiehen Sulka</title>
 <meta name="description" content="Wilsun uutinen.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Willimiehen Sulka">
+<meta property="og:locale" content="fi_FI">
+<meta property="og:title" content="Uutinen – Willimiehen Sulka">
+<meta property="og:description" content="Wilsun uutinen.">
+<meta property="og:url" content="https://sachinthalut.github.io/Wilsu/uutiset.html">
+<meta property="og:image" content="https://sachinthalut.github.io/Wilsu/assets/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Willimiehen Sulka – sulkapalloa Lappeenrannassa">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0B3B2E">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23F5D547'/%3E%3Cpath d='M13 12 L20 29 L27 12' fill='none' stroke='%230B3B2E' stroke-width='3.2'/%3E%3Ccircle cx='20' cy='30' r='3.2' fill='%230B3B2E'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="assets/WilsuLogo.png">
 <link rel="preload" href="assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -31,6 +43,7 @@
 </div>
 </main>
 <script src="assets/content.js"></script>
+<script src="assets/i18n.js"></script>
 <script src="assets/site.js"></script>
 <script>
 (async () => {
@@ -41,29 +54,30 @@
   const hero = $("hero");
   if (i < 0){
     hero.classList.add("noimg"); hero.insertAdjacentHTML("afterbegin", DECO);
-    $("title").textContent = "Uutista ei löytynyt";
-    $("body").innerHTML = `<p>Uutinen on ehkä poistettu tai linkki on vanhentunut.</p><p><a href="uutiset.html">Katso kaikki uutiset</a></p>`;
+    $("title").textContent = t("Uutista ei löytynyt");
+    $("body").innerHTML = `<p>${t("Uutinen on ehkä poistettu tai linkki on vanhentunut.")}</p><p><a href="uutiset.html">${t("Katso kaikki uutiset")}</a></p>`;
     return;
   }
   const n = C.news[i];
   document.title = n.title + " – Willimiehen Sulka";
-  $("title").textContent = n.title;
-  $("meta").innerHTML = `<span class="cat" style="background:var(--shuttle);color:var(--deep);font-size:.8rem;font-weight:600;padding:.2rem .65rem;border-radius:999px">${esc(n.cat)}</span><time datetime="${n.date}">${D(n.date).getDate()}. ${MONTHS[D(n.date).getMonth()]} ${n.date.slice(0,4)}</time>`;
+  $("title").textContent = n.title; $("title").setAttribute("data-keep", "");
+  $("meta").innerHTML = `<span class="cat" style="background:var(--shuttle);color:var(--deep);font-size:.8rem;font-weight:600;padding:.2rem .65rem;border-radius:999px" data-keep>${esc(t(n.cat))}</span><time datetime="${n.date}" data-keep>${longDate(n.date)}</time>`;
   const noImg = () => { hero.classList.add("noimg"); hero.insertAdjacentHTML("afterbegin", DECO); document.querySelector(".article-body figcaption")?.remove(); };
   if (n.image) hero.prepend(img(n.image, n.caption || "", el => { el.remove(); noImg(); }, 2000)); else noImg();
+  $("body").setAttribute("data-keep", "");
   $("body").innerHTML = (n.image && n.caption ? `<figcaption>${esc(n.caption)}</figcaption>` : "")
     + (n.summary ? `<p class="summary">${esc(n.summary)}</p>` : "") + paragraphs(n.body);
   $("after").hidden = false;
   const newer = C.news[i - 1], older = C.news[i + 1];
-  $("pager").innerHTML = (older ? `<a href="uutinen.html?id=${encodeURIComponent(older.id)}"><small>Edellinen uutinen</small><b>${esc(older.title)}</b></a>` : "<span></span>")
-    + (newer ? `<a class="nxt" href="uutinen.html?id=${encodeURIComponent(newer.id)}"><small>Seuraava uutinen</small><b>${esc(newer.title)}</b></a>` : "");
+  $("pager").innerHTML = (older ? `<a href="uutinen.html?id=${encodeURIComponent(older.id)}"><small>Edellinen uutinen</small><b data-keep>${esc(older.title)}</b></a>` : "<span></span>")
+    + (newer ? `<a class="nxt" href="uutinen.html?id=${encodeURIComponent(newer.id)}"><small>Seuraava uutinen</small><b data-keep>${esc(newer.title)}</b></a>` : "");
   const url = location.href;
   if (navigator.share) $("share").onclick = () => navigator.share({ title: n.title, url }).catch(() => {});
   else $("share").hidden = true;
   $("copy").onclick = async () => {
-    try { await navigator.clipboard.writeText(url); $("copy").textContent = "Linkki kopioitu"; }
-    catch { $("copy").textContent = "Kopioi osoiteriviltä"; }
-    setTimeout(() => $("copy").textContent = "Kopioi linkki", 2500);
+    try { await navigator.clipboard.writeText(url); $("copy").textContent = t("Linkki kopioitu"); }
+    catch { $("copy").textContent = t("Kopioi osoiteriviltä"); }
+    setTimeout(() => $("copy").textContent = t("Kopioi linkki"), 2500);
   };
 })();
 </script>

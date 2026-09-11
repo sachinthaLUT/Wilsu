@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usein kysyttyä – Willimiehen Sulka</title>
+<meta name="description" content="Vastauksia aloittelijoiden kysymyksiin: mitä mukaan, paljonko maksaa ja miten mukaan pääsee.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Willimiehen Sulka">
+<meta property="og:locale" content="fi_FI">
+<meta property="og:title" content="Usein kysyttyä – Willimiehen Sulka">
+<meta property="og:description" content="Vastauksia aloittelijoiden kysymyksiin.">
+<meta property="og:url" content="https://sachinthalut.github.io/Wilsu/ukk.html">
+<meta property="og:image" content="https://sachinthalut.github.io/Wilsu/assets/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Willimiehen Sulka – sulkapalloa Lappeenrannassa">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B3B2E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23F5D547'/%3E%3Cpath d='M13 12 L20 29 L27 12' fill='none' stroke='%230B3B2E' stroke-width='3.2'/%3E%3Ccircle cx='20' cy='30' r='3.2' fill='%230B3B2E'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="assets/WilsuLogo.png">
+<link rel="preload" href="assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main>
+<section class="page-hero"><svg class="lines" viewBox="0 0 610 700" aria-hidden="true" fill="none" stroke="#1B7458" stroke-width="6"><rect x="3" y="3" width="604" height="694"/><line x1="46" y1="0" x2="46" y2="700"/><line x1="564" y1="0" x2="564" y2="700"/><line x1="0" y1="76" x2="610" y2="76"/><line x1="0" y1="472" x2="610" y2="472"/><line x1="305" y1="0" x2="305" y2="472"/><line x1="0" y1="680" x2="610" y2="680" stroke="#F5D547" stroke-width="9"/></svg>
+  <div class="wrap">
+    <a class="crumb" href="index.html">Etusivu</a>
+    <h1>Usein kysyttyä</h1>
+    <p>Aloittamassa sulkapalloa? Tähän on koottu vastaukset yleisimpiin kysymyksiin.</p>
+  </div>
+</section>
+<section class="block" style="padding-top:3rem">
+  <div class="wrap" style="max-width:860px">
+    <div class="faq" id="faq"></div>
+    <div class="faq-cta">
+      <p>Etkö löytänyt vastausta? Kysy meiltä suoraan.</p>
+      <a class="btn btn-shuttle" href="mailto:puheenjohtaja@wilsu.fi">Lähetä sähköpostia</a>
+    </div>
+  </div>
+</section>
+</main>
+<script src="assets/content.js"></script>
+<script src="assets/i18n.js"></script>
+<script src="assets/site.js"></script>
+<script>
+(async () => {
+  renderChrome("ukk");
+  const C = await loadContent(); renderAlert(C);
+  const groups = [];
+  C.faq.forEach(f => { const g = f.topic || ""; let x = groups.find(y => y.name === g); if (!x) groups.push(x = { name: g, items: [] }); x.items.push(f); });
+  $("faq").innerHTML = groups.map(g => `<div class="faq-group">${g.name ? `<h2>${esc(t(g.name))}</h2>` : ""}
+    ${g.items.map(f => `<details data-keep><summary>${esc(f.q)}</summary><div class="answer">${paragraphs(f.a)}</div></details>`).join("")}</div>`).join("");
+  if (location.hash){ const d = document.getElementById(location.hash.slice(1)); if (d && d.tagName === "DETAILS") d.open = true; }
+})();
+</script>
+</body>
+</html>

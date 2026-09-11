@@ -1,26 +1,38 @@
 /* =====================================================================
-   WILSU – SISÄLTÖ
+   WILSU – SISÄLTÖ (V3)
    ---------------------------------------------------------------------
-   0) SETTINGS: logo, membership form link and fees.
-   1) SHEETS: paste the "Publish to web" CSV link of each Google Sheet tab.
-      When a link is set, the website reads that tab. When it's empty,
-      or Google can't be reached, the site uses the backup content below.
-   2) VENUES: the halls. These rarely change, so they live here.
-   3) DEFAULT_CONTENT: backup content. Keep it roughly up to date once
-      or twice a year, so the site never looks empty.
+   0) SETTINGS: logo, hero, membership form, fees, statistics.
+   1) SHEETS: the "Publish to web" CSV link of each Google Sheet tab.
+      When a link is set, the site reads that tab. When it's empty, or
+      Google can't be reached, the site uses the backup content below.
+   2) VENUES and LINKS: rarely change, so they live here.
+   3) DEFAULT_CONTENT: backup content, shown if the sheet can't be read.
+   English: fixed page text is translated in assets/i18n.js. Sheet content
+   uses the "... EN" columns in the sheet (filled automatically by Google).
    ===================================================================== */
 
 const SETTINGS = {
-  /* Club logo. Put the file in the assets folder (logo.svg or logo.png) and write its name here,
-     or paste a Google Drive share link. Leave empty to use the built-in shuttle mark. */
-  logo:"assets/WilsuLogo.png",
+  /* Club logo: file in the assets folder, or a Google Drive share link. */
+  logo: "assets/WilsuLogo.png",
 
-  /* Google Form for membership applications. Paste the form's share link here. */
+  /* Top of the homepage:
+     "animation" = the 3D badminton rally (current live version)
+     "video"     = club video (set heroVideo below), falls back to a photo slideshow
+     "slideshow" = slow slideshow of the gallery's homepage photos */
+  hero: "animation",
+  heroVideo: "",          /* e.g. "assets/hero.mp4" – Google Drive links don't work for video */
+  heroVideoMobile: "",    /* optional smaller video for phones */
+  heroPoster: "",         /* optional still image while the video loads */
+
+  /* Google Form for membership applications */
   membershipForm: "",
 
   /* Membership fees shown on the homepage */
   priceNormal:  "200 €",
-  priceForever: "50 €"
+  priceForever: "50 €",
+
+  /* Visitor statistics: your GoatCounter code, e.g. "wilsu" for wilsu.goatcounter.com. Empty = off. */
+  statsCode: ""
 };
 
 const SHEETS = {
@@ -28,7 +40,9 @@ const SHEETS = {
   cancellations: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=623488143&single=true&output=csv",   // Peruutukset
   news:          "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=900805977&single=true&output=csv",   // Uutiset
   events:        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1195664895&single=true&output=csv",   // Tapahtumat
-  gallery:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1016504809&single=true&output=csv"    // Galleria
+  gallery:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1016504809&single=true&output=csv",   // Galleria
+  faq:           "",   // UKK (new tab)
+  board:         ""    // Hallitus (new tab)
 };
 
 const VENUES = {
@@ -36,45 +50,44 @@ const VENUES = {
     name: "Huhtiniemen liikuntakeskus",
     short: "Huhtiniemi, monitoimisali",
     info: "Aikuisten ja kaksinpelin vuorot monitoimisalissa. Kisat ja kinkkukisat pelataan täällä.",
-    maps: "Huhtiniemen liikuntakeskus, Lappeenranta"
+    maps: "Huhtiniemen liikuntakeskus, Lappeenranta",
+    en: { name: "Huhtiniemi Sports Centre", short: "Huhtiniemi, multi-purpose hall", info: "Adult and singles sessions in the multi-purpose hall. Club tournaments are played here." }
   },
   urheilutalo: {
     name: "Lappeenrannan urheilutalo",
     short: "Urheilutalo",
     info: "Junioreiden vuorot. Sisään valmentajan kanssa tai uimahallin kautta.",
-    maps: "Lappeenrannan urheilutalo, Lappeenranta"
+    maps: "Lappeenrannan urheilutalo, Lappeenranta",
+    en: { name: "Lappeenranta Sports Hall (Urheilutalo)", short: "Urheilutalo", info: "Junior sessions. Enter with the coach or through the swimming hall." }
   }
 };
 
 const DEFAULT_CONTENT = {
   schedule: [
-    { id:"Ma 17.30 Juniorit",  day:1, start:"17:30", end:"19:00", group:"juniorit", title:"Harrastejunnut", venue:"urheilutalo", from:"2026-08-31" },
-    { id:"Ke 16.30 Juniorit",  day:3, start:"16:30", end:"17:45", group:"juniorit", title:"Harrastejunnut, lisämaksu", venue:"urheilutalo", tba:true },
-    { id:"Ti 17.00 Aikuiset",  day:2, start:"17:00", end:"18:30", group:"aikuiset", title:"Aikuisten vuoro", venue:"huhtiniemi", from:"2026-09-01" },
-    { id:"To 16.30 Kaksinpeli",day:4, start:"16:30", end:"18:00", group:"kilpa",    title:"Kaksinpeli, aikuiset ja kilpajunnut", venue:"huhtiniemi", from:"2026-09-01" },
-    { id:"To 18.00 Aikuiset",  day:4, start:"18:00", end:"19:30", group:"aikuiset", title:"Aikuisten vuoro", venue:"huhtiniemi", from:"2026-09-01" },
-    { id:"La 10.30 Kaksinpeli",day:6, start:"10:30", end:"12:00", group:"kilpa",    title:"Kaksinpeli, aikuiset ja kilpajunnut", venue:"huhtiniemi", from:"2026-09-01" },
-    { id:"Su 16.30 Aikuiset",  day:0, start:"16:30", end:"18:00", group:"aikuiset", title:"Aikuisten vuoro", venue:"huhtiniemi", from:"2026-09-01" }
+    { id:"Ma 17.30 Juniorit",  day:1, start:"17:30", end:"19:00", group:"juniorit", title:"Harrastejunnut", venue:"urheilutalo", from:"2026-08-31", en:{ title:"Junior training" } },
+    { id:"Ke 16.30 Juniorit",  day:3, start:"16:30", end:"17:45", group:"juniorit", title:"Harrastejunnut, lisämaksu", venue:"urheilutalo", tba:true, en:{ title:"Junior training, extra fee" } },
+    { id:"Ti 17.00 Aikuiset",  day:2, start:"17:00", end:"18:30", group:"aikuiset", title:"Aikuisten vuoro", venue:"huhtiniemi", from:"2026-09-01", en:{ title:"Adult session" } },
+    { id:"To 16.30 Kaksinpeli",day:4, start:"16:30", end:"18:00", group:"kilpa",    title:"Kaksinpeli, aikuiset ja kilpajunnut", venue:"huhtiniemi", from:"2026-09-01", en:{ title:"Singles, adults and competitive juniors" } },
+    { id:"To 18.00 Aikuiset",  day:4, start:"18:00", end:"19:30", group:"aikuiset", title:"Aikuisten vuoro", venue:"huhtiniemi", from:"2026-09-01", en:{ title:"Adult session" } },
+    { id:"La 10.30 Kaksinpeli",day:6, start:"10:30", end:"12:00", group:"kilpa",    title:"Kaksinpeli, aikuiset ja kilpajunnut", venue:"huhtiniemi", from:"2026-09-01", en:{ title:"Singles, adults and competitive juniors" } },
+    { id:"Su 16.30 Aikuiset",  day:0, start:"16:30", end:"18:00", group:"aikuiset", title:"Aikuisten vuoro", venue:"huhtiniemi", from:"2026-09-01", en:{ title:"Adult session" } }
   ],
 
-  /* Example cancellation to demonstrate the banner. Remove before launch. */
-  cancellations: [
-    { slot:"To 18.00 Aikuiset", date:"2026-09-17", reason:"hallilla on tapahtuma" }
-  ],
+  cancellations: [],
 
   news: [
     { date:"2026-05-03", cat:"Kilpailut", title:"Silja Soikkelille luokkamestaruus",
       summary:"Naisten nelinpelin A-luokan mestaruus Lilli Laurin kanssa. Kaikki ottelut päättyivät 2–0.",
       body:"Silja Soikkeli voitti naisten nelinpelin A-luokan luokkamestaruuden parinaan Lilli Lauri Puistolan Urheilijoista.\n\nPari ei hävinnyt kisassa yhtään erää. Finaalissa kaatuivat Veera Lindell (BarBa) ja Nova Nyqvist (HBC) lukemin 21–6, 21–16.",
-      image:"https://i.media.fi/incoming/p6er69/9131692.jpg/alternates/FREE_1440/9131692.jpg" },
+      image:"" },
     { date:"2026-04-20", cat:"Seuraelämä", title:"Kausi huipentuu sulanrepijäisiin",
       summary:"Aikuisten pelit ja ilta LUTin rantasaunalla, junnuille omat kisat ja iltapala.",
       body:"Aikuisten sulanrepijäiset vietetään lauantaina 16.5. LUTin rantasaunalla. Sulanrepijäispelit pelataan perjantaina 15.5.\n\nJunioreiden kausi päättyy maanantaina 18.5. pieniin kisoihin ja yhteiseen ruokailuun. Vuoro alkaa normaalisti klo 17.30 ja päättyy noin klo 20. Jos et osallistu ruokailuun, voit lähteä kotiin pelien jälkeen klo 19.",
-      image:"https://drive.google.com/file/d/1c0LjaGN9UxB6kymzls-zl1sQyxAdHvh8/view?usp=sharing", caption:"Treenivuoro Huhtiniemessä. Kuva: Tomi Karttunen" },
+      image:"https://wilsu.fi/tiedostot/Wilsun%20treenit%2017.10-12.jpg", caption:"Treenivuoro Huhtiniemessä. Kuva: Tomi Karttunen" },
     { date:"2026-03-17", cat:"Ranking", title:"Silja nousi Suomen top 8:aan",
       summary:"Naisten kaksinpelin rankinglistalla sijoitus on nyt kahdeksas.",
       body:"Silja Soikkeli nousi sijalle 8 Suomen naisten kaksinpelin rankinglistalla. Rankingit löytyvät Sulkapalloliiton kisapalvelusta: https://badmintonfinland.tournamentsoftware.com",
-      image:"https://kouvolansulkapalloseura.sporttisaitti.com/@Bin/989901/MK-B%207.1.2023%20Silja%20ja%20Noora.jpg" },
+      image:"" },
     { date:"2026-02-15", cat:"Kilpailut", title:"SM-kisoista sijat 5–8",
       summary:"Silja kaatoi Unni Parikan kolmessa erässä ennen puolivälierää.",
       body:"Wilsun Silja Soikkeli sijoittui SM-kisoissa sijoille 5–8. Silja voitti Unni Parikan (ESB) 2–1 (15–21, 21–19, 21–16).\n\nPuolivälierässä kisan kakkossijoitettu Petra Saarnivaara (TS) oli vahvempi 2–0 (21–14, 21–11).",
@@ -110,20 +123,53 @@ const DEFAULT_CONTENT = {
   ],
 
   gallery: [1,10,11,12,13,14,16,17,18,19,2,20,21,23,24,25,26,28,29,30,31,32,4,6,7,9]
-    .map(n => ({ image:"https://wilsu.fi/tiedostot/" + encodeURIComponent(`Wilsun treenit 17.10-${n}.jpg`), caption:"Treenivuoro Huhtiniemessä. Kuva: Tomi Karttunen" }))
+    .map((n, i) => ({ image:"https://wilsu.fi/tiedostot/" + encodeURIComponent(`Wilsun treenit 17.10-${n}.jpg`),
+      caption:"Treenivuoro Huhtiniemessä", category:"Aikuisten treenit", featured: i < 10,
+      en:{ caption:"Training session at Huhtiniemi" } })),
+
+  /* Beginner FAQ. The board should check these answers. */
+  faq: [
+    { topic:"Aloittaminen", q:"Tarvitaanko aiempaa kokemusta?", a:"Ei tarvita. Vuoroilla pelaa kaikentasoisia pelaajia, ja uudet pelaajat ovat aina tervetulleita. Kerro vuoron alussa, että olet uusi.",
+      en:{ q:"Do I need previous experience?", a:"No. Players of all levels play in our sessions, and new players are always welcome. Just tell us at the start of the session that you are new." } },
+    { topic:"Aloittaminen", q:"Mitä mukaan ensimmäiselle kerralle?", a:"Sisäpelikengät, joiden pohja ei jätä jälkiä, urheiluvaatteet ja juomapullo. Oma maila, jos sellainen on.",
+      en:{ q:"What should I bring the first time?", a:"Indoor shoes with non-marking soles, sportswear and a water bottle. Your own racket if you have one." } },
+    { topic:"Aloittaminen", q:"Entä jos minulla ei ole mailaa?", a:"Kysy etukäteen sähköpostilla puheenjohtaja@wilsu.fi, niin katsotaan, löytyykö lainamailaa. Mailoja voi hankkia myös Intersportin seurakaupasta.",
+      en:{ q:"What if I don't have a racket?", a:"Ask in advance at puheenjohtaja@wilsu.fi and we will see if a loan racket is available. Rackets are also available from the Intersport club shop." } },
+    { topic:"Jäsenyys", q:"Paljonko pelaaminen maksaa?", a:"Jäsenmaksu on 200 € vuodessa, Forever-kuntoklubin jäsenille 50 € vuodessa. Jäsenhakemuksen täyttämisen jälkeen rahastonhoitaja lähettää laskun.",
+      en:{ q:"How much does it cost to play?", a:"The membership fee is €200 per year, or €50 per year for Forever fitness club members. After you fill in the membership application, the treasurer will send you an invoice." } },
+    { topic:"Jäsenyys", q:"Voinko tulla kokeilemaan ennen liittymistä?", a:"Voit. Tule vuorolle ja kerro olevasi uusi. Jäsenhakemuksen voi täyttää myöhemmin.",
+      en:{ q:"Can I try it before joining?", a:"Yes. Come to a session and tell us you are new. You can fill in the membership application later." } },
+    { topic:"Juniorit", q:"Minkä ikäiset voivat tulla junioreihin?", a:"Harrastejunnujen vuorot ovat kaikenikäisille junioreille. Alle 18-vuotiaan jäsenhakemukseen tarvitaan huoltajan tiedot.",
+      en:{ q:"What age can juniors start?", a:"Junior sessions are open to juniors of all ages. Applicants under 18 need a guardian's details on the membership application." } },
+    { topic:"Kilpailut", q:"Tarvitsenko lisenssin?", a:"Harjoitusvuoroilla ei. Sulkapalloliiton kilpailuihin osallistuminen vaatii Suomen Sulkapalloliiton lisenssin.",
+      en:{ q:"Do I need a licence?", a:"Not for training sessions. Taking part in Badminton Finland tournaments requires a Badminton Finland player licence." } },
+    { topic:"Käytännöt", q:"Mistä näen, onko vuoro peruttu?", a:"Peruutukset näkyvät sivun yläreunassa ja harjoitusajoissa heti, kun ne on ilmoitettu. Jäsenet saavat tiedon myös sähköpostiin.",
+      en:{ q:"How do I know if a session is cancelled?", a:"Cancellations appear at the top of the website and in the training schedule as soon as they are announced. Members are also informed by email." } }
+  ],
+
+  /* Board of directors. Add photos with a Google Drive link in the sheet. */
+  board: [
+    { name:"Teemu Utela", role:"Puheenjohtaja", email:"puheenjohtaja@wilsu.fi", en:{ role:"Chairman" } },
+    { name:"Timo Alho", role:"Rahastonhoitaja", email:"laskutus@wilsu.fi", en:{ role:"Treasurer" } },
+    { name:"Silja Soikkeli", role:"Sihteeri", en:{ role:"Secretary" } },
+    { name:"Riku Ahola", role:"Hallituksen jäsen", en:{ role:"Board member" } },
+    { name:"Tuomas Aarnikoivu", role:"Hallituksen jäsen", en:{ role:"Board member" } },
+    { name:"Oscar Akkanen", role:"Hallituksen jäsen", en:{ role:"Board member" } },
+    { name:"Mikko Silvennoinen", role:"Hallituksen jäsen", en:{ role:"Board member" } }
+  ]
 };
 
 /* Archive photos for the history section. Add scanned photos when members send them. */
 const ARCHIVE = [
-  { image:"https://wilsu.fi/tiedostot/IMG_20170909_152310_1_resized_20170913_094543384.jpg", caption:"Armilan koulu, 1980-luku" },
+  { image:"", caption:"Armilan koulu, 1980-luku" },
   { image:"", caption:"Prisman juniorit" }
 ];
 
 const LINKS = [
-  { name:"Suomen Sulkapalloliitto", url:"https://www.sulkapallo.fi", desc:"Lajiliiton uutiset, lisenssit ja valmennus." },
-  { name:"Kisakalenteri ja tulokset", url:"https://badmintonfinland.tournamentsoftware.com", desc:"Kaikki kotimaan kisat, ilmoittautumiset ja rankingit." },
-  { name:"BWF", url:"https://bwfbadminton.com", desc:"Maailman sulkapalloliitto, World Tour ja maailmanranking." },
-  { name:"BWF TV", url:"https://www.youtube.com/@bwftv", desc:"Huippuotteluita ja koosteita YouTubessa." },
-  { name:"Badminton Europe", url:"https://www.badmintoneurope.com", desc:"Euroopan liiton kisat ja EM-kilpailut." },
-  { name:"Arctic Open", url:"https://www.arcticopen.fi", desc:"Maailman huiput Vantaalla joka syksy." }
+  { name:"Suomen Sulkapalloliitto", url:"https://www.sulkapallo.fi", desc:"Lajiliiton uutiset, lisenssit ja valmennus.", en:{ name:"Badminton Finland", desc:"National federation news, licences and coaching." } },
+  { name:"Kisakalenteri ja tulokset", url:"https://badmintonfinland.tournamentsoftware.com", desc:"Kaikki kotimaan kisat, ilmoittautumiset ja rankingit.", en:{ name:"Tournaments and results", desc:"All Finnish tournaments, entries and rankings." } },
+  { name:"BWF", url:"https://bwfbadminton.com", desc:"Maailman sulkapalloliitto, World Tour ja maailmanranking.", en:{ desc:"Badminton World Federation, World Tour and world rankings." } },
+  { name:"BWF TV", url:"https://www.youtube.com/@bwftv", desc:"Huippuotteluita ja koosteita YouTubessa.", en:{ desc:"Top matches and highlights on YouTube." } },
+  { name:"Badminton Europe", url:"https://www.badmintoneurope.com", desc:"Euroopan liiton kisat ja EM-kilpailut.", en:{ desc:"European tournaments and championships." } },
+  { name:"Arctic Open", url:"https://www.arcticopen.fi", desc:"Maailman huiput Vantaalla joka syksy.", en:{ desc:"World-class players in Vantaa every autumn." } }
 ];

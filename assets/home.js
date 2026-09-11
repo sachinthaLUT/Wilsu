@@ -18,15 +18,15 @@ function nextSession(now){
 
 function renderNext(){
   const now = new Date(), n = nextSession(now);
-  if (!n){ $("next-when").textContent = "Kausi on tauolla"; $("next-meta").textContent = "Uudet vuorot julkaistaan tässä."; return; }
+  if (!n){ $("next-when").textContent = t("Kausi on tauolla"); $("next-meta").textContent = t("Uudet vuorot julkaistaan tässä."); return; }
   const dayDiff = Math.round((new Date(n.t).setHours(0,0,0,0) - new Date(now).setHours(0,0,0,0)) / 864e5);
-  const label = dayDiff === 0 ? "Tänään" : dayDiff === 1 ? "Huomenna" : DAYS[n.t.getDay()];
-  $("next-when").textContent = `${label} klo ${fiTime(n.s.start)}`;
+  const label = dayDiff === 0 ? t("Tänään") : dayDiff === 1 ? t("Huomenna") : DAYS[n.t.getDay()];
+  $("next-when").textContent = `${label} ${EN_ON ? "at" : "klo"} ${fiTime(n.s.start)}`;
   $("next-badge").innerHTML = `${n.t.getDate()}.${n.t.getMonth()+1}.<span>${SHORT[n.t.getDay()]}</span>`;
   const ms = n.t - now, h = Math.floor(ms / 36e5), m = Math.floor(ms % 36e5 / 6e4);
-  const left = h >= 24 ? `${Math.floor(h / 24)} pv ${h % 24} h` : `${h} h ${pad(m)} min`;
-  const v = VENUES[n.s.venue];
-  $("next-meta").innerHTML = `<b>${esc(n.s.title)}</b>, ${esc(v.short)}. <span class="countdown">Alkuun ${left}</span>`;
+  const left = h >= 24 ? `${Math.floor(h / 24)} ${EN_ON ? "d" : "pv"} ${h % 24} h` : `${h} h ${pad(m)} min`;
+  const v = loc(VENUES[n.s.venue]);
+  $("next-meta").innerHTML = `<span data-keep><b>${esc(n.s.title)}</b>, ${esc(v.short)}. <span class="countdown">${EN_ON ? "Starts in" : "Alkuun"} ${left}</span></span>`;
   $("next-map").href = routeUrl(v.maps);
 }
 
@@ -37,11 +37,11 @@ function renderWeek(){
     const slots = C.schedule.filter(s => s.day === day).sort((a, b) => a.start.localeCompare(b.start));
     const items = slots.map(s => `
       <div class="slot ${s.group} ${s.tba ? "tba" : ""}" data-group="${s.group}">
-        <b>${s.tba ? "Alkaa myöhemmin" : fiTime(s.start) + "–" + fiTime(s.end)}</b>
-        ${esc(s.title)}<br><a class="where" href="${mapsUrl(VENUES[s.venue].maps)}" style="color:inherit">${esc(VENUES[s.venue].short)}</a>
-        ${upcoming[s.id] ? `<span class="cancel">Peruttu ${fi(upcoming[s.id].date)}</span>` : ""}
+        <b>${s.tba ? t("Alkaa myöhemmin") : fiTime(s.start) + "–" + fiTime(s.end)}</b>
+        <span data-keep>${esc(s.title)}</span><br><a class="where" href="${mapsUrl(VENUES[s.venue].maps)}" style="color:inherit" data-keep>${esc(loc(VENUES[s.venue]).short)}</a>
+        ${upcoming[s.id] ? `<span class="cancel" data-keep>${EN_ON ? "Cancelled" : "Peruttu"} ${fi(upcoming[s.id].date)}</span>` : ""}
       </div>`).join("");
-    return `<div class="day ${day === now.getDay() ? "today" : ""} ${slots.length ? "" : "empty"}"><h4>${DAYS[day]}</h4><div>${items}</div></div>`;
+    return `<div class="day ${day === now.getDay() ? "today" : ""} ${slots.length ? "" : "empty"}"><h4 data-keep>${DAYS[day]}</h4><div>${items}</div></div>`;
   }).join("");
 }
 
@@ -59,11 +59,11 @@ function renderPlaces(){
       <ellipse cx="360" cy="150" rx="120" ry="40" fill="#B9D7E8"/>
       <g transform="translate(205 72)"><circle r="22" fill="#12604A" opacity=".18"/><path d="M0 8 C -12 -4 -12 -22 0 -22 C 12 -22 12 -4 0 8 Z" fill="#12604A"/><circle cy="-13" r="4.5" fill="#F5D547"/></g>
     </svg>`;
-  $("places").innerHTML = Object.entries(VENUES).map(([key, v]) => {
+  $("places").innerHTML = Object.entries(VENUES).map(([key, v0]) => { const v = loc(v0);
     const days = [...new Set(C.schedule.filter(s => s.venue === key && !s.tba).sort((a, b) => ORDER.indexOf(a.day) - ORDER.indexOf(b.day)).map(s => SHORT[s.day]))];
     return `<article class="place"><div class="place-map">${roads}</div>
-      <div class="place-body"><h3>${esc(v.name)}</h3><p>${esc(v.info)}</p>
-        <p><b style="color:var(--ink)">Vuorot:</b> ${days.join(", ") || "ei vuoroja tällä hetkellä"}</p>
+      <div class="place-body"><h3 data-keep>${esc(v.name)}</h3><p data-keep>${esc(v.info)}</p>
+        <p data-keep><b style="color:var(--ink)">${EN_ON ? "Sessions" : "Vuorot"}:</b> ${days.join(", ") || t("ei vuoroja tällä hetkellä")}</p>
         <div class="place-actions"><a class="btn btn-dark" href="${routeUrl(v.maps)}">Reittiohjeet</a><a class="btn btn-line" href="${mapsUrl(v.maps)}">Avaa kartta</a></div>
       </div></article>`;
   }).join("");
@@ -79,25 +79,30 @@ function renderEvents(){
   const up = C.events.filter(e => e.date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3);
   $("events").innerHTML = up.map(e => {
     const d = D(e.date);
-    return `<div class="event"><div class="date">${d.getDate()}<small>${MONTHS[d.getMonth()]}</small></div>
-      <div><h3>${esc(e.title)}</h3><p>${esc(e.place)}${e.desc ? ". " + esc(e.desc) : ""}</p></div>
-      <a class="btn btn-dark" href="${safeUrl(e.link) || "tapahtumat.html"}"${safeUrl(e.link) ? ' target="_blank" rel="noopener"' : ""}>${esc(e.linkText || "Ilmoittaudu")}</a></div>`;
+    return `<div class="event"><div class="date" data-keep>${d.getDate()}<small>${MONTHS[d.getMonth()]}</small></div>
+      <div data-keep><h3>${esc(e.title)}</h3><p>${esc(e.place)}${e.desc ? ". " + esc(e.desc) : ""}</p></div>
+      <a class="btn btn-dark" data-keep href="${safeUrl(e.link) || "tapahtumat.html"}"${safeUrl(e.link) ? ' target="_blank" rel="noopener"' : ""}>${esc(e.linkText || t("Ilmoittaudu"))}</a></div>`;
   }).join("") || `<p>Uusia tapahtumia julkaistaan pian. Seuraa meitä Instagramissa.</p>`;
 }
 
 function renderLinks(){
   const arrow = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>`;
-  $("links").innerHTML = LINKS.map(l => `<a class="ext" href="${l.url}" target="_blank" rel="noopener"><b>${esc(l.name)}${arrow}</b><span>${esc(l.desc)}</span></a>`).join("");
+  $("links").innerHTML = LINKS.map(loc).map(l => `<a class="ext" href="${l.url}" target="_blank" rel="noopener" data-keep><b>${esc(l.name)}${arrow}</b><span>${esc(l.desc)}</span></a>`).join("");
 }
 
-let lbIndex = 0;
+/* Homepage gallery: highlights marked "Etusivulle" in the sheet (or the first 12 photos) */
+function galleryHighlights(){
+  const f = C.gallery.filter(p => p.featured);
+  return (f.length ? f : C.gallery).slice(0, 12);
+}
 function renderGallery(){
-  const P = C.gallery, track = $("track"); track.innerHTML = "";
+  const P = galleryHighlights(), track = $("track"); track.innerHTML = "";
   P.forEach((p, i) => {
     const b = document.createElement("button");
-    b.className = "shot"; b.setAttribute("aria-label", `Avaa kuva ${i + 1}/${P.length}`);
-    b.appendChild(img(p.image, p.caption, el => { b.classList.add("missing"); el.remove(); b.textContent = "Kuva " + (i + 1); }, 1200));
-    b.addEventListener("click", () => openLb(i));
+    b.className = "shot"; b.setAttribute("aria-label", `${t("Avaa kuva")} ${i + 1}/${P.length}`);
+    b.appendChild(img(p.image, p.caption, el => { b.classList.add("missing"); el.remove(); }, 1200));
+    b.insertAdjacentHTML("beforeend", `<span class="shot-cap" data-keep><span class="shot-cat">${esc(t(p.category))}</span>${p.caption ? `<span>${esc(p.caption)}</span>` : ""}</span>`);
+    b.addEventListener("click", () => openLightbox(P, i));
     track.appendChild(b);
   });
   const step = () => (track.querySelector(".shot")?.offsetWidth || 300) + 16;
@@ -110,46 +115,82 @@ function renderGallery(){
   track.addEventListener("keydown", e => { if (e.key === "ArrowRight") $("g-next").click(); if (e.key === "ArrowLeft") $("g-prev").click(); });
 
   const grid = $("ig-grid"); grid.innerHTML = "";
-  P.slice(0, 6).forEach(p => {
+  C.gallery.slice(0, 6).forEach(p => {
     const a = document.createElement("a");
     a.href = "https://www.instagram.com/wilsubadminton"; a.setAttribute("aria-label", "Avaa Wilsun Instagram");
     a.appendChild(img(p.image, "", el => el.remove(), 500)); grid.appendChild(a);
   });
-  if (P[0]) $("now-photo").appendChild(img(P[0].image, "Wilsun treenivuoro Huhtiniemessä", el => el.remove(), 1600));
+  if (C.gallery[0]) $("now-photo").appendChild(img(C.gallery[0].image, t("Wilsun treenivuoro Huhtiniemessä"), el => el.remove(), 1600));
 
   ARCHIVE.forEach((p, i) => {
     const frame = $("archive-" + (i + 1)); if (!frame) return;
     const cap = frame.parentElement.querySelector("figcaption");
-    cap.textContent = p.caption || "";
-    const ask = `<div class="archive-ask"><b>${i === 0 ? "Etsimme vanhoja kuvia" : "Löytyykö albumista?"}</b>${i === 0 ? "Onko sinulla kuvia 1980- tai 90-luvulta? Lähetä ne osoitteeseen puheenjohtaja@wilsu.fi, niin skannataan ne seuran arkistoon." : "Prisman ja Wilsun alkuvuosien kuvat ovat seuralle aarteita."}</div>`;
+    cap.textContent = t(p.caption || "");
+    const ask = `<div class="archive-ask"><b>${t(i === 0 ? "Etsimme vanhoja kuvia" : "Löytyykö albumista?")}</b>${t(i === 0 ? "Onko sinulla kuvia 1980- tai 90-luvulta? Lähetä ne osoitteeseen puheenjohtaja@wilsu.fi, niin skannataan ne seuran arkistoon." : "Prisman ja Wilsun alkuvuosien kuvat ovat seuralle aarteita.")}</div>`;
     const fallback = () => { frame.innerHTML = ask; cap.style.visibility = "hidden"; };
     if (!p.image){ fallback(); return; }
     frame.appendChild(img(p.image, p.caption, fallback, 900));
   });
 }
 
-function showLb(){
-  const p = C.gallery[lbIndex], im = $("lb-img");
-  im.src = imageUrl(p.image, 2000); im.alt = p.caption || "";
-  $("lb-caption").textContent = `${lbIndex + 1} / ${C.gallery.length}${p.caption ? " · " + p.caption : ""}`;
+/* Hero: "animation" (3D rally), "video" (club video) or "slideshow" (gallery photos) */
+function setupHero(){
+  const mode = SETTINGS.hero || "animation";
+  const hero = $("hero");
+  if (mode === "animation"){
+    hero.classList.add("hero-anim"); $("hero-stage").hidden = false;
+    startHeroAnimation();
+    return false;
+  }
+  hero.classList.add("hero-video");
+  return true;
 }
-function openLb(i){ lbIndex = i; showLb(); $("lightbox").classList.add("open"); document.body.style.overflow = "hidden"; $("lb-close").focus(); }
-function closeLb(){ $("lightbox").classList.remove("open"); document.body.style.overflow = ""; }
-function moveLb(d){ lbIndex = (lbIndex + d + C.gallery.length) % C.gallery.length; showLb(); }
+function renderHeroMedia(){
+  const video = $("hero-video"), slides = $("hero-slides"), btn = $("media-toggle");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const saveData = navigator.connection && navigator.connection.saveData;
+  const small = matchMedia("(max-width: 700px)").matches;
+  const src = SETTINGS.hero === "video" ? ((small && SETTINGS.heroVideoMobile) || SETTINGS.heroVideo) : "";
+  let playing = true, timer = null, idx = 0, onScreen = true;
 
-function wireLightbox(){
-  $("lb-close").onclick = closeLb; $("lb-prev").onclick = () => moveLb(-1); $("lb-next").onclick = () => moveLb(1);
-  $("lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") closeLb(); });
-  document.addEventListener("keydown", e => {
-    if (!$("lightbox").classList.contains("open")) return;
-    if (e.key === "Escape") closeLb(); if (e.key === "ArrowRight") moveLb(1); if (e.key === "ArrowLeft") moveLb(-1);
-  });
-  let x0 = null;
-  $("lightbox").addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
-  $("lightbox").addEventListener("touchend", e => {
-    if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0;
-    if (Math.abs(dx) > 50) moveLb(dx < 0 ? 1 : -1); x0 = null;
-  });
+  const setBtn = () => { btn.classList.toggle("paused", !playing); btn.setAttribute("aria-label", t(playing ? "Pysäytä video" : "Toista video")); };
+  const poster = () => {
+    const p = SETTINGS.heroPoster || (C.gallery[0] && C.gallery[0].image);
+    if (p){ slides.innerHTML = ""; const d = document.createElement("div"); d.className = "slide on"; d.appendChild(img(p, "", null, 1920)); d.querySelector("img").style.animation = "none"; slides.appendChild(d); }
+  };
+
+  function startSlides(){
+    const photos = galleryHighlights().slice(0, 6);
+    if (!photos.length) return;
+    slides.innerHTML = "";
+    photos.forEach((p, i) => {
+      const d = document.createElement("div"); d.className = "slide" + (i === 0 ? " on" : "");
+      const im = img(p.image, "", el => d.remove(), 1920); im.loading = i === 0 ? "eager" : "lazy";
+      d.appendChild(im); slides.appendChild(d);
+    });
+    if (reduce || photos.length < 2) return;
+    btn.hidden = false; btn.setAttribute("aria-label", t("Pysäytä kuvaesitys"));
+    const tick = () => {
+      const all = slides.querySelectorAll(".slide"); if (all.length < 2) return;
+      all[idx % all.length].classList.remove("on"); idx++; all[idx % all.length].classList.add("on");
+    };
+    const run = () => { clearInterval(timer); if (playing && onScreen) timer = setInterval(tick, 5500); };
+    btn.onclick = () => { playing = !playing; setBtn(); run(); };
+    new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; run(); }).observe(slides);
+    run();
+  }
+
+  if (!src){ startSlides(); return; }
+  if (reduce || saveData){ poster(); return; }
+
+  if (SETTINGS.heroPoster){ video.poster = imageUrl(SETTINGS.heroPoster, 1920); poster(); }
+  video.src = src; video.preload = "auto"; video.hidden = false;
+  video.addEventListener("error", () => { video.hidden = true; startSlides(); }, { once: true });
+  video.addEventListener("playing", () => { slides.innerHTML = ""; }, { once: true });
+  btn.hidden = false;
+  btn.onclick = () => { playing = !playing; setBtn(); playing ? video.play() : video.pause(); };
+  new IntersectionObserver(([e]) => { if (!playing) return; e.isIntersecting ? video.play().catch(() => {}) : video.pause(); }).observe(video);
+  video.play().catch(() => {});
 }
 
 /* Membership: button opens the club's Google Form */
@@ -163,11 +204,11 @@ function renderJoin(){
 
 (async function init(){
   renderChrome("");
-  renderJoin(); wireLightbox();
+  const mediaHero = setupHero(); renderJoin();
   document.querySelectorAll(".filters button").forEach(b => b.addEventListener("click", () => setFilter(b.dataset.filter)));
   document.querySelectorAll("[data-go]").forEach(a => a.addEventListener("click", () => setFilter(a.dataset.go)));
     renderLinks();
   C = await loadContent();
-  renderAlert(C); renderNext(); renderWeek(); renderPlaces(); renderNews(); renderEvents(); renderGallery();
+  renderAlert(C); renderNext(); renderWeek(); renderPlaces(); renderNews(); renderEvents(); renderGallery(); if (mediaHero) renderHeroMedia();
   setInterval(renderNext, 30000);
 })();
