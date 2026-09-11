@@ -66,7 +66,7 @@ const DEFAULT_CONTENT = {
     { date:"2026-05-03", cat:"Kilpailut", title:"Silja Soikkelille luokkamestaruus",
       summary:"Naisten nelinpelin A-luokan mestaruus Lilli Laurin kanssa. Kaikki ottelut päättyivät 2–0.",
       body:"Silja Soikkeli voitti naisten nelinpelin A-luokan luokkamestaruuden parinaan Lilli Lauri Puistolan Urheilijoista.\n\nPari ei hävinnyt kisassa yhtään erää. Finaalissa kaatuivat Veera Lindell (BarBa) ja Nova Nyqvist (HBC) lukemin 21–6, 21–16.",
-      image:"" },
+      image:"https://i.media.fi/incoming/p6er69/9131692.jpg/alternates/FREE_1440/9131692.jpg" },
     { date:"2026-04-20", cat:"Seuraelämä", title:"Kausi huipentuu sulanrepijäisiin",
       summary:"Aikuisten pelit ja ilta LUTin rantasaunalla, junnuille omat kisat ja iltapala.",
       body:"Aikuisten sulanrepijäiset vietetään lauantaina 16.5. LUTin rantasaunalla. Sulanrepijäispelit pelataan perjantaina 15.5.\n\nJunioreiden kausi päättyy maanantaina 18.5. pieniin kisoihin ja yhteiseen ruokailuun. Vuoro alkaa normaalisti klo 17.30 ja päättyy noin klo 20. Jos et osallistu ruokailuun, voit lähteä kotiin pelien jälkeen klo 19.",
@@ -74,7 +74,7 @@ const DEFAULT_CONTENT = {
     { date:"2026-03-17", cat:"Ranking", title:"Silja nousi Suomen top 8:aan",
       summary:"Naisten kaksinpelin rankinglistalla sijoitus on nyt kahdeksas.",
       body:"Silja Soikkeli nousi sijalle 8 Suomen naisten kaksinpelin rankinglistalla. Rankingit löytyvät Sulkapalloliiton kisapalvelusta: https://badmintonfinland.tournamentsoftware.com",
-      image:"" },
+      image:"https://kouvolansulkapalloseura.sporttisaitti.com/@Bin/989901/MK-B%207.1.2023%20Silja%20ja%20Noora.jpg" },
     { date:"2026-02-15", cat:"Kilpailut", title:"SM-kisoista sijat 5–8",
       summary:"Silja kaatoi Unni Parikan kolmessa erässä ennen puolivälierää.",
       body:"Wilsun Silja Soikkeli sijoittui SM-kisoissa sijoille 5–8. Silja voitti Unni Parikan (ESB) 2–1 (15–21, 21–19, 21–16).\n\nPuolivälierässä kisan kakkossijoitettu Petra Saarnivaara (TS) oli vahvempi 2–0 (21–14, 21–11).",
@@ -115,7 +115,7 @@ const DEFAULT_CONTENT = {
 
 /* Archive photos for the history section. Add scanned photos when members send them. */
 const ARCHIVE = [
-  { image:"", caption:"Armilan koulu, 1980-luku" },
+  { image:"https://wilsu.fi/tiedostot/IMG_20170909_152310_1_resized_20170913_094543384.jpg", caption:"Armilan koulu, 1980-luku" },
   { image:"", caption:"Prisman juniorit" }
 ];
 
