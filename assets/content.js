@@ -32,7 +32,7 @@ const SETTINGS = {
   priceForever: "50 €",
 
   /* Visitor statistics: your GoatCounter code, e.g. "wilsu" for wilsu.goatcounter.com. Empty = off. */
-  statsCode: ""
+  statsCode: "saw"
 };
 
 const SHEETS = {
