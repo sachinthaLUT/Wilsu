@@ -183,8 +183,8 @@ const DEFAULT_CONTENT = {
 
 /* Archive photos for the history section. Add scanned photos when members send them. */
 const ARCHIVE = [
-  { image:"", caption:"Armilan koulu, 1980-luku" },
-  { image:"", caption:"Prisman juniorit" }
+  { image:"https://drive.google.com/file/d/1cLEoWIA7qZbApuHmb1oRG1szN9uCAVE1/view?usp=sharing", caption:"Armilan koulu, 1980-luku" },
+  { image:"https://drive.google.com/file/d/1PCILceynd-FNFX7cWDlv60QqbmP8MCJV/view?usp=sharing", caption:"Prisman juniorit" }
 ];
 
 const LINKS = [
