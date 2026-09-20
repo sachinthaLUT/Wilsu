@@ -2,6 +2,8 @@
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://drive.google.com https://lh3.googleusercontent.com https://*.googleusercontent.com https://*.goatcounter.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://gc.zgo.at https://*.goatcounter.com; font-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hallitus – Willimiehen Sulka</title>
 <meta name="description" content="Willimiehen Sulka ry:n hallitus ja yhteystiedot.">
@@ -47,13 +49,13 @@
 <script>
 (async () => {
   renderChrome("hallitus");
-  const C = await loadContent(); renderAlert(C);
+  const C = await loadContent(); afterLoad(C);
   const box = $("board");
   C.board.forEach((m, i) => {
     const lead = i === 0 && /puheenjohtaja|chair/i.test(m.role || "");
     const el = document.createElement("article");
     el.className = "member" + (lead ? " chair" : "");
-    const email = safeUrl("mailto:" + (m.email || "")) && m.email ? `<a href="mailto:${esc(m.email)}">${esc(m.email)}</a>` : "";
+    const mh = mailHref(m.email); const email = mh ? `<a href="${esc(mh)}" data-keep>${esc(m.email.trim())}</a>` : "";
     el.innerHTML = `<div class="photo"><span class="initials" aria-hidden="true">${esc(initials(m.name))}</span></div>
       <div class="info" data-keep><h3>${esc(m.name)}</h3><span class="role">${esc(m.role || "")}</span>${m.bio ? `<p>${esc(m.bio)}</p>` : ""}${email}</div>`;
     if (m.image) el.querySelector(".photo").appendChild(img(m.image, m.name, e => e.remove(), 700));

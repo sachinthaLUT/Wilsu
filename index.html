@@ -2,6 +2,8 @@
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://drive.google.com https://lh3.googleusercontent.com https://*.googleusercontent.com https://*.goatcounter.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://gc.zgo.at https://*.goatcounter.com; font-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Willimiehen Sulka – sulkapalloa Lappeenrannassa</title>
 <meta name="description" content="Willimiehen Sulka ry on lappeenrantalainen sulkapalloseura junioreille, harrastajille ja kilpapelaajille.">
@@ -216,7 +218,7 @@
         <div class="price-row"><div><b>Normaali jäsenmaksu</b><span>Kaikki ryhmät</span></div><div class="price"><span id="price-normal">200 €</span><small>/ vuosi</small></div></div>
         <div class="price-row"><div><b>Forever-jäsenet</b><span>Forever-kuntoklubin jäsenille</span></div><div class="price"><span id="price-forever">50 €</span><small>/ vuosi</small></div></div>
       </div>
-      <a class="btn btn-shuttle join-btn" id="join-link" href="#" target="_blank" rel="noopener">Täytä jäsenhakemus</a>
+      <a class="btn btn-shuttle join-btn" id="join-link" href="#" target="_blank" rel="noopener noreferrer">Täytä jäsenhakemus</a>
       <p class="join-small">Hakemus avautuu Google-lomakkeena. Saat kopion vastauksistasi sähköpostiin.</p>
     </div>
   </div>
@@ -246,6 +248,19 @@
     </div>
     <div class="ig-grid" id="ig-grid"></div>
   </div>
+</section>
+
+<section class="block sponsors" id="kumppanit" hidden>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <h2>Yhteistyökumppanit</h2>
+        <p class="lede">Nämä yritykset tekevät seuran toiminnan mahdolliseksi.</p>
+      </div>
+      <a class="text-link" href="kumppanit.html">Tutustu kumppaneihin</a>
+    </div>
+  </div>
+  <div class="sponsor-strip" id="sponsor-strip" aria-label="Yhteistyökumppanit"></div>
 </section>
 </main>
 

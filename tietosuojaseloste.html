@@ -2,6 +2,8 @@
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://drive.google.com https://lh3.googleusercontent.com https://*.googleusercontent.com https://*.goatcounter.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://gc.zgo.at https://*.goatcounter.com; font-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tietosuojaseloste – Willimiehen Sulka</title>
 <meta name="description" content="Willimiehen Sulka ry:n jäsenrekisterin ja verkkosivujen tietosuojaseloste.">
@@ -79,6 +81,6 @@
 <script src="assets/content.js"></script>
 <script src="assets/i18n.js"></script>
 <script src="assets/site.js"></script>
-<script>renderChrome(""); if (EN_ON){ const n = document.createElement("p"); n.className = "note"; n.style.marginBottom = "1rem"; n.textContent = "This privacy policy is available in Finnish only. Questions: puheenjohtaja@wilsu.fi"; n.setAttribute("data-keep",""); document.querySelector(".legal-doc").prepend(n); }</script>
+<script>renderChrome(""); loadContent().then(afterLoad); if (EN_ON){ const n = document.createElement("p"); n.className = "note"; n.style.marginBottom = "1rem"; n.textContent = "This privacy policy is available in Finnish only. Questions: puheenjohtaja@wilsu.fi"; n.setAttribute("data-keep",""); document.querySelector(".legal-doc").prepend(n); }</script>
 </body>
 </html>

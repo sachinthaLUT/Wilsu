@@ -2,6 +2,8 @@
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://drive.google.com https://lh3.googleusercontent.com https://*.googleusercontent.com https://*.goatcounter.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://gc.zgo.at https://*.goatcounter.com; font-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tapahtumat ja tulokset – Willimiehen Sulka</title>
 <meta name="description" content="Wilsun tulevat tapahtumat, kisat ja tulokset.">
@@ -53,23 +55,23 @@
 <script>
 (async () => {
   renderChrome("tapahtumat");
-  const C = await loadContent(); renderAlert(C);
+  const C = await loadContent(); afterLoad(C);
   const today = iso(new Date());
   const pin = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>`;
   const up = C.events.filter(e => e.date >= today).sort((a, b) => a.date.localeCompare(b.date));
   $("upcoming").innerHTML = up.map(e => {
-    const d = D(e.date), link = safeUrl(e.link);
+    const d = D(e.date), link = href(e.link);
     const placeLink = e.place && !/vahvistetaan/i.test(e.place) ? `<a class="ev-place" href="${mapsUrl(e.place + ", Lappeenranta")}">${pin}${esc(e.place)}</a>` : `<span class="ev-place">${pin}${esc(e.place || t("Paikka vahvistetaan"))}</span>`;
     return `<article class="ev-card"><div class="date" data-keep>${d.getDate()}.${d.getMonth()+1}.<small>${DAYS[d.getDay()]} ${e.date.slice(0,4)}</small></div>
       <div data-keep><h3>${esc(e.title)}</h3>${e.desc ? `<p>${esc(e.desc)}</p>` : ""}${placeLink}</div>
-      ${link ? `<a class="btn btn-dark" href="${link}" target="_blank" rel="noopener">${esc(e.linkText || t("Ilmoittaudu"))}</a>` : ""}</article>`;
+      ${link ? `<a class="btn btn-dark" href="${link}" target="_blank" rel="noopener noreferrer">${esc(e.linkText || t("Ilmoittaudu"))}</a>` : ""}</article>`;
   }).join("") || `<p class="lede">${t("Uusia tapahtumia julkaistaan pian. Seuraa meitä Instagramissa.")}</p>`;
   const past = C.events.filter(e => e.date < today).sort((a, b) => b.date.localeCompare(a.date));
   $("past").innerHTML = past.map(e => {
-    const rl = safeUrl(e.resultsLink);
+    const rl = href(e.resultsLink);
     return `<div class="past-row"><time datetime="${e.date}">${fiFull(e.date)}</time>
       <div data-keep><b>${esc(e.title)}</b>${e.place ? `, ${esc(e.place)}` : ""}${e.result ? `<br><span class="res">${esc(e.result)}</span>` : ""}</div>
-      ${rl ? `<a class="text-link" href="${rl}">${t("Tulokset")}</a>` : "<span></span>"}</div>`;
+      ${rl ? `<a class="text-link" href="${rl}" target="_blank" rel="noopener noreferrer">${t("Tulokset")}</a>` : "<span></span>"}</div>`;
   }).join("") || `<p class="lede" style="padding-top:1rem">${t("Menneitä tapahtumia ei vielä ole.")}</p>`;
 })();
 </script>

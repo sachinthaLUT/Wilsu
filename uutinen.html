@@ -2,6 +2,8 @@
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://drive.google.com https://lh3.googleusercontent.com https://*.googleusercontent.com https://*.goatcounter.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://gc.zgo.at https://*.goatcounter.com; font-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Uutinen – Willimiehen Sulka</title>
 <meta name="description" content="Wilsun uutinen.">
@@ -48,7 +50,7 @@
 <script>
 (async () => {
   renderChrome("uutiset");
-  const C = await loadContent(); renderAlert(C);
+  const C = await loadContent(); afterLoad(C);
   const id = new URLSearchParams(location.search).get("id");
   const i = C.news.findIndex(n => n.id === id);
   const hero = $("hero");

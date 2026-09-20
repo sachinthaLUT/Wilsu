@@ -2,14 +2,20 @@
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://drive.google.com https://lh3.googleusercontent.com https://*.googleusercontent.com https://*.goatcounter.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://gc.zgo.at https://*.goatcounter.com; font-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sivua ei löytynyt – Willimiehen Sulka</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0B3B2E">
 <script>
-  /* Works both on github.io/Wilsu/ and on your own domain */
-  window.BASE = location.hostname.endsWith("github.io") ? "/" + location.pathname.split("/")[1] + "/" : "/";
-  document.write('<base href="' + BASE + '"><link rel="stylesheet" href="' + BASE + 'assets/style.css">');
+  /* Works both on github.io/Wilsu/ and on the club's own domain. No query input is ever used here. */
+  (function(){
+    var seg = location.pathname.split("/")[1];
+    window.BASE = (location.hostname.slice(-10) === "github.io" && /^[\w.-]+$/.test(seg)) ? "/" + seg + "/" : "/";
+    var base = document.createElement("base"); base.href = BASE; document.head.appendChild(base);
+    var css = document.createElement("link"); css.rel = "stylesheet"; css.href = BASE + "assets/style.css"; document.head.appendChild(css);
+  })();
 </script>
 </head>
 <body>
@@ -20,15 +26,20 @@
   <a class="btn btn-ghost" href="index.html#vuorot" style="margin-left:.5rem">Harjoitusajat</a>
 </div></main>
 <script>
-  ["content.js","i18n.js","site.js"].forEach(f => document.write('<script src="' + BASE + 'assets/' + f + '"><\/script>'));
-</script>
-<script>
-  /* Old wilsu.fi addresses: send visitors to the matching section */
-  const OLD = { "juniorit.php":"index.html#pelaa", "jasenlomake.php":"index.html#jasenyys", "jasenedut.php":"index.html#jasenyys",
-    "galleria.php":"galleria.html", "linkit.php":"index.html#linkit", "seurainfo.php":"index.html#seura", "yhteystiedot.php":"hallitus.html", "index.php":"index.html" };
-  const page = location.pathname.split("/").pop();
-  if (OLD[page]) location.replace(BASE + OLD[page]);
-  else renderChrome("");
+  (function(){
+    /* Old wilsu.fi addresses: send visitors to the matching page */
+    var OLD = { "juniorit.php":"index.html#pelaa", "jasenlomake.php":"index.html#jasenyys", "jasenedut.php":"index.html#jasenyys",
+      "galleria.php":"galleria.html", "linkit.php":"index.html#linkit", "seurainfo.php":"index.html#seura",
+      "yhteystiedot.php":"hallitus.html", "index.php":"index.html" };
+    var page = location.pathname.split("/").pop();
+    if (Object.prototype.hasOwnProperty.call(OLD, page)){ location.replace(BASE + OLD[page]); return; }
+    ["content.js","i18n.js","site.js"].forEach(function(f, i, all){
+      var s = document.createElement("script");
+      s.src = BASE + "assets/" + f; s.async = false;
+      if (f === "site.js") s.onload = function(){ renderChrome(""); };
+      document.body.appendChild(s);
+    });
+  })();
 </script>
 </body>
 </html>

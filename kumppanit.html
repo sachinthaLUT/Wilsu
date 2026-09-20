@@ -5,14 +5,14 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://drive.google.com https://lh3.googleusercontent.com https://*.googleusercontent.com https://*.goatcounter.com; connect-src 'self' https://docs.google.com https://*.googleusercontent.com https://gc.zgo.at https://*.goatcounter.com; font-src 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Galleria – Willimiehen Sulka</title>
-<meta name="description" content="Kuvia Wilsun treeneistä, tapahtumista ja kisoista.">
+<title>Yhteistyökumppanit – Willimiehen Sulka</title>
+<meta name="description" content="Willimiehen Sulan yhteistyökumppanit.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Willimiehen Sulka">
 <meta property="og:locale" content="fi_FI">
-<meta property="og:title" content="Galleria – Willimiehen Sulka">
-<meta property="og:description" content="Kuvia Wilsun treeneistä, tapahtumista ja kisoista.">
-<meta property="og:url" content="https://sachinthalut.github.io/Wilsu/galleria.html">
+<meta property="og:title" content="Yhteistyökumppanit – Willimiehen Sulka">
+<meta property="og:description" content="Willimiehen Sulan yhteistyökumppanit.">
+<meta property="og:url" content="https://sachinthalut.github.io/Wilsu/kumppanit.html">
 <meta property="og:image" content="https://sachinthalut.github.io/Wilsu/assets/share.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -29,15 +29,17 @@
 <section class="page-hero"><svg class="lines" viewBox="0 0 610 700" aria-hidden="true" fill="none" stroke="#1B7458" stroke-width="6"><rect x="3" y="3" width="604" height="694"/><line x1="46" y1="0" x2="46" y2="700"/><line x1="564" y1="0" x2="564" y2="700"/><line x1="0" y1="76" x2="610" y2="76"/><line x1="0" y1="472" x2="610" y2="472"/><line x1="305" y1="0" x2="305" y2="472"/><line x1="0" y1="680" x2="610" y2="680" stroke="#F5D547" stroke-width="9"/></svg>
   <div class="wrap">
     <a class="crumb" href="index.html">Etusivu</a>
-    <h1>Galleria</h1>
-    <p>Kuvia treeneistä, seuran tapahtumista ja kisamatkoilta. Napauta kuva isoksi.</p>
+    <h1>Yhteistyökumppanit</h1>
+    <p>Wilsun toiminta on vapaaehtoisten ja yhteistyökumppaneiden varassa. Käythän tukemassa heitä.</p>
   </div>
 </section>
-<section class="block" style="padding-top:2.5rem">
+<section class="block" style="padding-top:3rem">
   <div class="wrap">
-    <div class="toolbar"><div class="chips" id="cats" role="group" aria-label="Valitse kategoria"></div></div>
-    <div class="masonry" id="grid" aria-live="polite"></div>
-    <p class="empty-state" id="empty" hidden>Tässä kategoriassa ei ole vielä kuvia.</p>
+    <div class="partner-list" id="partners-list"></div>
+    <div class="faq-cta" style="margin-top:2.5rem">
+      <p>Kiinnostaako yhteistyö Wilsun kanssa? Kerromme mielellämme lisää seuran näkyvyydestä ja tapahtumista.</p>
+      <a class="btn btn-shuttle" href="mailto:puheenjohtaja@wilsu.fi">Ota yhteyttä</a>
+    </div>
   </div>
 </section>
 </main>
@@ -46,35 +48,22 @@
 <script src="assets/site.js"></script>
 <script>
 (async () => {
-  renderChrome("galleria");
+  renderChrome("kumppanit");
   const C = await loadContent(); afterLoad(C);
-  const present = GALLERY_CATS.filter(c => C.gallery.some(p => p.category === c));
-  const want = new URLSearchParams(location.search).get("kategoria");
-  let cat = present.includes(want) ? want : "Kaikki";
-  function chips(){
-    $("cats").innerHTML = ["Kaikki", ...present].map(c => {
-      const n = c === "Kaikki" ? C.gallery.length : C.gallery.filter(p => p.category === c).length;
-      return `<button aria-pressed="${c === cat}" data-c="${esc(c)}" data-keep>${esc(t(c))}<span class="cat-count">${n}</span></button>`;
-    }).join("");
-  }
-  function draw(){
-    const list = cat === "Kaikki" ? C.gallery : C.gallery.filter(p => p.category === cat);
-    const grid = $("grid"); grid.innerHTML = "";
-    $("empty").hidden = list.length > 0;
-    list.forEach((p, i) => {
-      const b = document.createElement("button");
-      b.setAttribute("aria-label", `${t("Avaa kuva")} ${i + 1}/${list.length}`);
-      b.appendChild(img(p.image, p.caption, () => b.classList.add("missing"), 900));
-      if (p.caption || cat === "Kaikki") b.insertAdjacentHTML("beforeend", `<span class="shot-cap" data-keep>${cat === "Kaikki" ? `<span class="shot-cat">${esc(t(p.category))}</span>` : ""}${p.caption ? `<span>${esc(p.caption)}</span>` : ""}</span>`);
-      b.onclick = () => openLightbox(list, i);
-      grid.appendChild(b);
-    });
-    const u = new URL(location.href);
-    if (cat === "Kaikki") u.searchParams.delete("kategoria"); else u.searchParams.set("kategoria", cat);
-    history.replaceState(null, "", u);
-  }
-  $("cats").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; cat = b.dataset.c; chips(); draw(); });
-  chips(); draw();
+  const box = $("partners-list");
+  if (!C.sponsors.length){ box.innerHTML = `<p class="empty-state">${t("Kumppanit julkaistaan pian.")}</p>`; return; }
+  C.sponsors.forEach(sp => {
+    const u = href(sp.url);
+    const el = document.createElement("article");
+    el.className = "partner";
+    el.innerHTML = `<div class="partner-logo"></div>
+      <div class="partner-body"><h2 data-keep>${esc(sp.name)}</h2>${sp.desc ? `<p data-keep>${esc(sp.desc)}</p>` : ""}
+      ${u ? `<a class="btn btn-line" href="${u}" target="_blank" rel="noopener noreferrer">Avaa sivusto</a>` : ""}</div>`;
+    const box2 = el.querySelector(".partner-logo");
+    if (sp.logo) box2.appendChild(img(sp.logo, sp.name, () => box2.innerHTML = `<span class="partner-initials" data-keep>${esc(initials(sp.name))}</span>`, 600));
+    else box2.innerHTML = `<span class="partner-initials" data-keep>${esc(initials(sp.name))}</span>`;
+    box.appendChild(el);
+  });
 })();
 </script>
 </body>
