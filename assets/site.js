@@ -1,5 +1,10 @@
 /* Shared logic for every page. Volunteers don't need to edit this file. */
 
+/* Best-effort: don't let another site frame this one */
+if (window.top !== window.self){
+  try { window.top.location = window.location; } catch (e) { document.documentElement.innerHTML = ""; }
+}
+
 /* ---------- Language ---------- */
 const LANG = (() => {
   const q = new URLSearchParams(location.search).get("lang");
@@ -35,7 +40,45 @@ const fiFull = s => fi(s) + s.slice(0,4);
 const longDate = s => { const d = D(s); return EN_ON ? `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}` : `${d.getDate()}. ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; };
 const fiTime = x => EN_ON ? x : x.replace(":", ".");
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-const safeUrl = u => /^(https?:|mailto:|tel:)/i.test(u || "") ? u : "";
+/* ---------- Safe URLs. Everything from the sheet goes through these. ---------- */
+function parsedHttpUrl(u){
+  const raw = String(u || "").trim();
+  /* reject anything that could break out of an attribute before the URL parser tidies it up */
+  if (!raw || /[<>"'`\\\s]/.test(raw)) return "";
+  try {
+    const x = new URL(raw);
+    if (x.protocol !== "https:" && x.protocol !== "http:") return "";
+    if (x.username || x.password) return "";
+    if (/[<>"'`\\\s]/.test(x.href)) return "";
+    return x.href;
+  } catch (e) { return ""; }
+}
+const EMAIL_RE = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+function safeUrl(u){
+  const s = String(u || "").trim();
+  if (/^mailto:/i.test(s)){
+    const addr = s.slice(7).split("?")[0];
+    return EMAIL_RE.test(addr) ? "mailto:" + addr : "";
+  }
+  if (/^tel:/i.test(s)){
+    const n = s.slice(4);
+    return /^\+?[0-9().\-\s]{6,20}$/.test(n) ? "tel:" + n.replace(/\s+/g, "") : "";
+  }
+  return parsedHttpUrl(s);
+}
+/* Use this for every href built from sheet content */
+const href = u => { const v = safeUrl(u); return v ? esc(v) : ""; };
+const mailHref = e => EMAIL_RE.test(String(e || "").trim()) ? "mailto:" + esc(String(e).trim()) : "";
+/* Membership applications may only point at a Google Form */
+function membershipUrl(u){
+  const v = parsedHttpUrl(u); if (!v) return "";
+  try {
+    const x = new URL(v);
+    if (x.hostname === "forms.gle") return v;
+    if (x.hostname === "docs.google.com" && x.pathname.startsWith("/forms/")) return v;
+  } catch (e) {}
+  return "";
+}
 const mapsUrl = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
 const routeUrl = q => "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(q);
 const slug = n => (n.date + "-" + (n.titleFi || n.title)).toLowerCase()
@@ -45,11 +88,21 @@ const loc = o => (EN_ON && o && o.en) ? Object.assign({}, o, o.en) : o;
 
 /* ---------- Images (Google Drive links supported) ---------- */
 const DRIVE_RE = /drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([\w-]+)/;
+const IMAGE_HOSTS = ["drive.google.com", "lh3.googleusercontent.com"];
+function allowedImageHost(host){
+  const extra = (typeof SETTINGS !== "undefined" && Array.isArray(SETTINGS.allowedImageHosts)) ? SETTINGS.allowedImageHosts : [];
+  return IMAGE_HOSTS.includes(host) || extra.includes(host);
+}
 function imageUrl(link, width = 1600){
-  if (!link) return "";
-  const m = link.match(DRIVE_RE);
+  const s = String(link || "").trim();
+  if (!s) return "";
+  const m = s.match(DRIVE_RE);
   if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w${width}`;
-  return safeUrl(link) || (/^[\w./-]+$/.test(link) ? link : "");
+  /* the club's own files in the site folder */
+  if (/^assets\/[\w./-]+$/.test(s) && !s.includes("..")) return s;
+  const v = parsedHttpUrl(s);
+  if (!v) return "";
+  try { return allowedImageHost(new URL(v).hostname) ? v : ""; } catch (e) { return ""; }
 }
 function img(src, alt, onFail, width){
   const i = new Image(); i.loading = "lazy"; i.decoding = "async"; i.alt = alt || "";
@@ -70,7 +123,10 @@ const DECO = `<svg class="deco" viewBox="0 0 300 300" aria-hidden="true">
 
 function paragraphs(text){
   return String(text || "").split(/\n\s*\n|\n/).map(p => p.trim()).filter(Boolean)
-    .map(p => "<p>" + esc(p).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" rel="noopener">$1</a>') + "</p>").join("");
+    .map(p => "<p>" + esc(p).replace(/https:\/\/[^\s<]+/g, u => {
+      const clean = parsedHttpUrl(u);
+      return clean ? `<a href="${esc(clean)}" rel="noopener noreferrer nofollow">${esc(u)}</a>` : esc(u);
+    }) + "</p>").join("");
 }
 
 /* ---------- Google Sheets loader ---------- */
@@ -132,13 +188,27 @@ const MAPPERS = {
     featured: yes(r["etusivulle"])
   })).filter(g => g.image),
   faq: rows => rows.map(r => ({ q: L(r, "kysymys"), a: L(r, "vastaus"), topic: r["aihe"] || "" })).filter(f => f.q && f.a),
+  settings: rows => rows.map(r => ({ key: (r["asetus"] || "").toLowerCase(), value: L(r, "arvo") })).filter(r => r.key && r.value),
+  sponsors: rows => rows.map(r => ({
+    name: r["nimi"], logo: r["logo"], desc: L(r, "kuvaus"), url: r["verkkosivu"],
+    order: parseInt(r["järjestys"] || "999", 10) || 999
+  })).filter(sp => sp.name).sort((a, b) => a.order - b.order),
   board: rows => rows.map(r => ({ name: r["nimi"], role: L(r, "rooli"), image: r["kuva"], bio: L(r, "esittely"), email: r["sähköposti"] })).filter(b => b.name)
 };
+
+/* Only published Google Sheet tabs may be fetched */
+function sheetUrl(u){
+  const v = parsedHttpUrl(u); if (!v) return "";
+  try {
+    const x = new URL(v);
+    return (x.protocol === "https:" && x.hostname === "docs.google.com" && x.pathname.startsWith("/spreadsheets/d/e/")) ? v : "";
+  } catch (e) { return ""; }
+}
 
 async function loadContent(){
   const out = JSON.parse(JSON.stringify(DEFAULT_CONTENT));
   for (const k in out) out[k] = out[k].map(loc);
-  await Promise.all(Object.entries(SHEETS).filter(([k, url]) => url && MAPPERS[k]).map(async ([key, url]) => {
+  await Promise.all(Object.entries(SHEETS).map(([k, u]) => [k, sheetUrl(u)]).filter(([k, url]) => url && MAPPERS[k]).map(async ([key, url]) => {
     const ctrl = new AbortController(); const tm = setTimeout(() => ctrl.abort(), 6000);
     try {
       const res = await fetch(url, { signal: ctrl.signal });
@@ -148,6 +218,7 @@ async function loadContent(){
     } catch (e) { console.warn(`Taulukon "${key}" lataus epäonnistui, käytetään varasisältöä.`, e); }
     finally { clearTimeout(tm); }
   }));
+  out.settings = Object.fromEntries((out.settings || []).map(r => [r.key, r.value]));
   out.news.forEach(n => n.id = slug(n));
   out.news.sort((a, b) => b.date.localeCompare(a.date));
   return out;
@@ -231,11 +302,11 @@ function renderChrome(current){
         <p style="max-width:32ch">Kysyttävää vuoroista tai jäsenyydestä? Kirjoita meille.</p>
         <p><a href="mailto:puheenjohtaja@wilsu.fi">puheenjohtaja@wilsu.fi</a><br><a href="mailto:laskutus@wilsu.fi">laskutus@wilsu.fi</a></p></div>
       <div><h4>Pelaa</h4><ul><li><a href="index.html#pelaa">Ryhmät</a></li><li><a href="index.html#vuorot">Harjoitusajat</a></li><li><a href="index.html#paikat">Paikat ja kartat</a></li><li><a href="ukk.html">Usein kysyttyä</a></li><li><a href="index.html#jasenyys">Liity jäseneksi</a></li></ul></div>
-      <div><h4>Seura</h4><ul><li><a href="uutiset.html">Uutiset</a></li><li><a href="tapahtumat.html">Tapahtumat ja tulokset</a></li><li><a href="galleria.html">Galleria</a></li><li><a href="hallitus.html">Hallitus</a></li><li><a href="index.html#seura">Historia</a></li><li><a href="index.html#linkit">Linkit</a></li></ul></div>
+      <div><h4>Seura</h4><ul><li><a href="uutiset.html">Uutiset</a></li><li><a href="tapahtumat.html">Tapahtumat ja tulokset</a></li><li><a href="galleria.html">Galleria</a></li><li><a href="hallitus.html">Hallitus</a></li><li><a href="index.html#seura">Historia</a></li><li><a href="index.html#linkit">Linkit</a></li><li><a href="kumppanit.html">Yhteistyökumppanit</a></li></ul></div>
       <div><h4>Seuraa</h4><ul><li><a href="https://www.instagram.com/wilsubadminton">Instagram</a></li><li><a href="https://www.facebook.com/profile.php?id=61566355680608">Facebook</a></li><li><a href="https://seurakauppa.intersport.fi/seurat/willimiehen-sulka">Seurakauppa</a></li></ul></div>
     </div>
-    <div class="partners"><span>Yhteistyössä</span>
-      <a href="https://www.intersport.fi/fi/kauppa/lappeenranta/">Intersport Lappeenranta</a><a href="https://www.liikuntakeskus.com">Liikuntakeskus</a><a href="https://www.foreverclub.fi">Forever</a><a href="https://as-huolto.fi/korjaus-ja-huolto/">AS-Huolto</a></div>
+    <div class="partners" id="partners"><span>Yhteistyössä</span>
+      <a href="kumppanit.html">Yhteistyökumppanit</a></div>
     <div class="legal"><span>© ${new Date().getFullYear()} Willimiehen Sulka ry</span><a href="tietosuojaseloste.html">Tietosuojaseloste</a></div>
   </div>`;
   document.body.append(footer);
@@ -250,11 +321,11 @@ function renderChrome(current){
 
 /* Privacy-friendly visitor statistics (GoatCounter). Only loads if a code is set in SETTINGS. */
 function startStats(){
-  const code = typeof SETTINGS !== "undefined" && SETTINGS.statsCode;
-  if (!code || location.protocol === "file:") return;
+  const code = typeof SETTINGS !== "undefined" ? String(SETTINGS.statsCode || "") : "";
+  if (!/^[a-z0-9-]{1,40}$/i.test(code) || location.protocol === "file:") return;
   const s = document.createElement("script");
-  s.async = true; s.src = "https://gc.zgo.at/count.js";
-  s.dataset.goatcounter = `https://${code}.goatcounter.com/count`;
+  s.async = true; s.crossOrigin = "anonymous"; s.src = "https://gc.zgo.at/count.js";
+  s.dataset.goatcounter = "https://" + code + ".goatcounter.com/count";
   document.head.appendChild(s);
 }
 
@@ -315,3 +386,16 @@ function moveLb(d){ LB.i = (LB.i + d + LB.list.length) % LB.list.length; showLb(
 
 /* Initials avatar for board members without a photo */
 const initials = name => name.split(/\s+/).map(w => w[0]).slice(0, 2).join("").toUpperCase();
+
+/* Footer partner names come from the Kumppanit tab */
+function renderPartners(c){
+  if (!c.sponsors || !c.sponsors.length) return;
+  const box = $("partners"); if (!box) return;
+  box.innerHTML = `<span>Yhteistyössä</span>` + c.sponsors.map(sp => {
+    const u = href(sp.url);
+    return u ? `<a href="${u}" target="_blank" rel="noopener noreferrer" data-keep>${esc(sp.name)}</a>`
+             : `<a href="kumppanit.html" data-keep>${esc(sp.name)}</a>`;
+  }).join("");
+}
+/* Every page calls this once the sheet content has loaded */
+function afterLoad(c){ renderAlert(c); renderPartners(c); }

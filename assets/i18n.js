@@ -215,6 +215,16 @@ const EN = {
   /* Privacy page (the policy itself stays in Finnish) */
   "Miten Willimiehen Sulka ry käsittelee jäsentensä ja hakijoiden henkilötietoja.": "How Willimiehen Sulka ry processes the personal data of its members and applicants.",
 
+  /* Sponsors */
+  "Yhteistyökumppanit": "Partners",
+  "Yhteistyökumppanit – Willimiehen Sulka": "Partners – Willimiehen Sulka",
+  "Nämä yritykset tekevät seuran toiminnan mahdolliseksi.": "These companies make the club's work possible.",
+  "Tutustu kumppaneihin": "Meet our partners",
+  "Wilsun toiminta on vapaaehtoisten ja yhteistyökumppaneiden varassa. Käythän tukemassa heitä.": "Wilsu runs on volunteers and partners. Please support them.",
+  "Avaa sivusto": "Visit website",
+  "Kumppanit julkaistaan pian.": "Partners will be published soon.",
+  "Kiinnostaako yhteistyö Wilsun kanssa? Kerromme mielellämme lisää seuran näkyvyydestä ja tapahtumista.": "Interested in partnering with Wilsu? We're happy to tell you more about club visibility and events.",
+
   /* Error page */
   "Pallo meni ulos.": "That shot went out.",
   "Sivua ei löytynyt. Se on ehkä siirretty uuteen paikkaan sivuston uudistuksessa.": "Page not found. It may have moved when the website was renewed.",

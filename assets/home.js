@@ -81,13 +81,13 @@ function renderEvents(){
     const d = D(e.date);
     return `<div class="event"><div class="date" data-keep>${d.getDate()}<small>${MONTHS[d.getMonth()]}</small></div>
       <div data-keep><h3>${esc(e.title)}</h3><p>${esc(e.place)}${e.desc ? ". " + esc(e.desc) : ""}</p></div>
-      <a class="btn btn-dark" data-keep href="${safeUrl(e.link) || "tapahtumat.html"}"${safeUrl(e.link) ? ' target="_blank" rel="noopener"' : ""}>${esc(e.linkText || t("Ilmoittaudu"))}</a></div>`;
+      <a class="btn btn-dark" data-keep href="${href(e.link) || "tapahtumat.html"}"${href(e.link) ? ' target="_blank" rel="noopener noreferrer"' : ""}>${esc(e.linkText || t("Ilmoittaudu"))}</a></div>`;
   }).join("") || `<p>Uusia tapahtumia julkaistaan pian. Seuraa meitä Instagramissa.</p>`;
 }
 
 function renderLinks(){
   const arrow = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>`;
-  $("links").innerHTML = LINKS.map(loc).map(l => `<a class="ext" href="${l.url}" target="_blank" rel="noopener" data-keep><b>${esc(l.name)}${arrow}</b><span>${esc(l.desc)}</span></a>`).join("");
+  $("links").innerHTML = LINKS.map(loc).filter(l => href(l.url)).map(l => `<a class="ext" href="${href(l.url)}" target="_blank" rel="noopener noreferrer" data-keep><b>${esc(l.name)}${arrow}</b><span>${esc(l.desc)}</span></a>`).join("");
 }
 
 /* Homepage gallery: highlights marked "Etusivulle" in the sheet (or the first 12 photos) */
@@ -97,6 +97,8 @@ function galleryHighlights(){
 }
 function renderGallery(){
   const P = galleryHighlights(), track = $("track"); track.innerHTML = "";
+  const sec = $("galleria"); if (sec) sec.hidden = P.length === 0;
+  if (!P.length) return;
   P.forEach((p, i) => {
     const b = document.createElement("button");
     b.className = "shot"; b.setAttribute("aria-label", `${t("Avaa kuva")} ${i + 1}/${P.length}`);
@@ -122,6 +124,9 @@ function renderGallery(){
   });
   if (C.gallery[0]) $("now-photo").appendChild(img(C.gallery[0].image, t("Wilsun treenivuoro Huhtiniemessä"), el => el.remove(), 1600));
 
+}
+
+function renderArchive(){
   ARCHIVE.forEach((p, i) => {
     const frame = $("archive-" + (i + 1)); if (!frame) return;
     const cap = frame.parentElement.querySelector("figcaption");
@@ -193,22 +198,52 @@ function renderHeroMedia(){
   video.play().catch(() => {});
 }
 
+/* Sponsor strip: logos scroll slowly to the left, pause on hover */
+function renderSponsors(){
+  const strip = $("sponsor-strip"), sec = $("kumppanit");
+  if (!sec || !strip) return;
+  const list = C.sponsors || [];
+  sec.hidden = !list.length;
+  if (!list.length) return;
+  const item = sp => {
+    const a = document.createElement("a");
+    a.className = "sponsor"; a.href = "kumppanit.html"; a.setAttribute("aria-label", sp.name);
+    a.innerHTML = `<span class="sponsor-name" data-keep>${esc(sp.name)}</span>`;
+    if (sp.logo){
+      const im = img(sp.logo, sp.name, el => el.remove(), 400);
+      im.className = "sponsor-logo"; a.prepend(im);
+    }
+    return a;
+  };
+  strip.innerHTML = "";
+  const run = document.createElement("div"); run.className = "sponsor-run";
+  /* repeat short lists so the strip always fills the screen */
+  const reps = Math.max(1, Math.ceil(8 / list.length));
+  for (let r = 0; r < reps; r++) list.forEach(sp => run.appendChild(item(sp)));
+  const run2 = run.cloneNode(true); run2.setAttribute("aria-hidden", "true");
+  strip.append(run, run2);
+  strip.style.setProperty("--speed", Math.max(24, list.length * reps * 5) + "s");
+}
+
 /* Membership: button opens the club's Google Form */
 function renderJoin(){
-  const link = safeUrl(SETTINGS.membershipForm) || "mailto:laskutus@wilsu.fi?subject=Jäsenhakemus";
-  $("join-link").href = link;
-  if (!SETTINGS.membershipForm){ $("join-link").removeAttribute("target"); }
-  $("price-normal").textContent = SETTINGS.priceNormal;
-  $("price-forever").textContent = SETTINGS.priceForever;
+  const s = (C && C.settings) || {};
+  const form = membershipUrl(s.jasenlomake || SETTINGS.membershipForm);
+  const link = $("join-link");
+  link.href = form || "mailto:laskutus@wilsu.fi?subject=Jasenhakemus";
+  if (form){ link.target = "_blank"; link.rel = "noopener noreferrer"; } else link.removeAttribute("target");
+  $("price-normal").textContent = s.jasenmaksu || SETTINGS.priceNormal;
+  $("price-forever").textContent = s.jasenmaksu_forever || SETTINGS.priceForever;
 }
 
 (async function init(){
   renderChrome("");
-  const mediaHero = setupHero(); renderJoin();
+  const mediaHero = setupHero();
   document.querySelectorAll(".filters button").forEach(b => b.addEventListener("click", () => setFilter(b.dataset.filter)));
   document.querySelectorAll("[data-go]").forEach(a => a.addEventListener("click", () => setFilter(a.dataset.go)));
     renderLinks();
   C = await loadContent();
-  renderAlert(C); renderNext(); renderWeek(); renderPlaces(); renderNews(); renderEvents(); renderGallery(); if (mediaHero) renderHeroMedia();
+  afterLoad(C); renderNext(); renderWeek(); renderPlaces(); renderNews(); renderEvents(); renderJoin();
+  renderGallery(); renderArchive(); renderSponsors(); if (mediaHero) renderHeroMedia();
   setInterval(renderNext, 30000);
 })();

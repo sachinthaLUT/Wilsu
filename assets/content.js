@@ -24,25 +24,34 @@ const SETTINGS = {
   heroVideoMobile: "",    /* optional smaller video for phones */
   heroPoster: "",         /* optional still image while the video loads */
 
-  /* Google Form for membership applications */
+  /* Google Form for membership applications. Must be a docs.google.com/forms/... or forms.gle link.
+     The Asetukset tab in the sheet can override this. */
   membershipForm: "",
 
   /* Membership fees shown on the homepage */
   priceNormal:  "200 €",
   priceForever: "50 €",
 
-  /* Visitor statistics: your GoatCounter code, e.g. "wilsu" for wilsu.goatcounter.com. Empty = off. */
-  statsCode: "saw"
+  /* Visitor statistics: a GoatCounter site code only (letters, numbers, hyphen), e.g. "saw". Empty = off. */
+  statsCode: "",
+
+  /* Extra hostnames allowed to serve images. Photos should live in Google Drive; only add a host
+     you trust, because anything listed here can load images (and see visitors' addresses). */
+  allowedImageHosts: []
 };
 
+/* Sheet links must be "Publish to web" CSV links on docs.google.com (/spreadsheets/d/e/...).
+   Anything else is ignored and the backup content below is used. */
 const SHEETS = {
-  schedule:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1561646268&single=true&output=csv",   // Vuorot
-  cancellations: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1308069276&single=true&output=csv",   // Peruutukset
-  news:          "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1010366994&single=true&output=csv",   // Uutiset
-  events:        "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1366506154&single=true&output=csv",   // Tapahtumat
-  gallery:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=672631943&single=true&output=csv",   // Galleria
-  faq:           "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=675361153&single=true&output=csv",   // UKK (new tab)
-  board:         "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1160483995&single=true&output=csv"    // Hallitus (new tab)
+  schedule:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1610182645&single=true&output=csv",   // Vuorot
+  cancellations: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=623488143&single=true&output=csv",   // Peruutukset
+  news:          "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=900805977&single=true&output=csv",   // Uutiset
+  events:        "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1195664895&single=true&output=csv",   // Tapahtumat
+  gallery:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vRjihjEQSOhyFHJVFKGgH5PlkpPWL7j7E0wOrXmXsK9gGORsS8DUUqYc7Jmovg_8TF6abBTAb8qipuj/pub?gid=1016504809&single=true&output=csv",   // Galleria
+  faq:           "",   // UKK
+  board:         "",   // Hallitus
+  sponsors:      "",   // Kumppanit
+  settings:      ""    // Asetukset (fees, membership form link)
 };
 
 const VENUES = {
@@ -83,7 +92,7 @@ const DEFAULT_CONTENT = {
     { date:"2026-04-20", cat:"Seuraelämä", title:"Kausi huipentuu sulanrepijäisiin",
       summary:"Aikuisten pelit ja ilta LUTin rantasaunalla, junnuille omat kisat ja iltapala.",
       body:"Aikuisten sulanrepijäiset vietetään lauantaina 16.5. LUTin rantasaunalla. Sulanrepijäispelit pelataan perjantaina 15.5.\n\nJunioreiden kausi päättyy maanantaina 18.5. pieniin kisoihin ja yhteiseen ruokailuun. Vuoro alkaa normaalisti klo 17.30 ja päättyy noin klo 20. Jos et osallistu ruokailuun, voit lähteä kotiin pelien jälkeen klo 19.",
-      image:"https://wilsu.fi/tiedostot/Wilsun%20treenit%2017.10-12.jpg", caption:"Treenivuoro Huhtiniemessä. Kuva: Tomi Karttunen" },
+      image:"", caption:"" },
     { date:"2026-03-17", cat:"Ranking", title:"Silja nousi Suomen top 8:aan",
       summary:"Naisten kaksinpelin rankinglistalla sijoitus on nyt kahdeksas.",
       body:"Silja Soikkeli nousi sijalle 8 Suomen naisten kaksinpelin rankinglistalla. Rankingit löytyvät Sulkapalloliiton kisapalvelusta: https://badmintonfinland.tournamentsoftware.com",
@@ -95,7 +104,7 @@ const DEFAULT_CONTENT = {
     { date:"2026-01-13", cat:"Juniorit", title:"Junnuvuorot jatkuvat Urheilutalolla",
       summary:"Maanantain ohjatut treenit klo 17.30–19.00. Uudet pelaajat ovat tervetulleita.",
       body:"Junioreiden vuorot jatkuvat Urheilutalolla maanantaisin 13.1.2026 alkaen klo 17.30–19.00.",
-      image:"https://wilsu.fi/tiedostot/Wilsun%20treenit%2017.10-20.jpg", caption:"Kuva: Tomi Karttunen" },
+      image:"", caption:"" },
     { date:"2025-11-22", cat:"Kilpailut", title:"Wilsu voitti Qvick-cupin Kouvolassa",
       summary:"Joukkuekisan pisteet: Wilsu 26, Kouvola 23 ja Hamsu 5.",
       body:"Wilsu voitti Qvick-cup-joukkuekisan Kouvolassa. Mukana olivat järjestävä seura KouSS ja Hamsu, ja jokaisella joukkueella oli neljä paria.\n\nParit pelasivat rankingin mukaisen ottelunsa ja lisäksi toisen pelin. Jokaisesta voitetusta erästä tuli joukkueelle piste.\n\nJoukkueessa pelasivat Silja Soikkeli ja Mikko Nikunen, Tommi Penttilä ja Ville Huuhtanen, Kulanaka Rajapaksha ja Teppo Ryhänen sekä Tuomas Kumpula ja Tommi Saukkonen.",
@@ -122,10 +131,23 @@ const DEFAULT_CONTENT = {
       desc:"", result:"Wilsun I-joukkue voitti", resultsLink:"" }
   ],
 
-  gallery: [1,10,11,12,13,14,16,17,18,19,2,20,21,23,24,25,26,28,29,30,31,32,4,6,7,9]
-    .map((n, i) => ({ image:"https://wilsu.fi/tiedostot/" + encodeURIComponent(`Wilsun treenit 17.10-${n}.jpg`),
-      caption:"Treenivuoro Huhtiniemessä", category:"Aikuisten treenit", featured: i < 10,
-      en:{ caption:"Training session at Huhtiniemi" } })),
+  /* Backup gallery: empty on purpose. Photos come from the Galleria tab (Google Drive links). */
+  gallery: [],
+
+  /* Backup sponsors, shown if the Kumppanit tab can't be read */
+  sponsors: [
+    { name:"Intersport Lappeenranta", url:"https://www.intersport.fi/fi/kauppa/lappeenranta/", desc:"Seurakauppa, mailat ja kengät seuran jäsenhintaan.", order:1,
+      en:{ desc:"Club shop with rackets and shoes at member prices." } },
+    { name:"Liikuntakeskus", url:"https://www.liikuntakeskus.com", desc:"Huhtiniemen liikuntakeskus, seuran pääasiallinen pelipaikka.", order:2,
+      en:{ desc:"Huhtiniemi sports centre, the club's main venue." } },
+    { name:"Forever", url:"https://www.foreverclub.fi", desc:"Forever-kuntoklubin jäsenille alennettu seuran jäsenmaksu.", order:3,
+      en:{ desc:"Forever fitness club members get a reduced club membership fee." } },
+    { name:"AS-Huolto", url:"https://as-huolto.fi/korjaus-ja-huolto/", desc:"Seuran pitkäaikainen yhteistyökumppani.", order:4,
+      en:{ desc:"A long-standing partner of the club." } }
+  ],
+
+  /* Backup settings, overridden by the Asetukset tab */
+  settings: [],
 
   /* Beginner FAQ. The board should check these answers. */
   faq: [
@@ -161,8 +183,8 @@ const DEFAULT_CONTENT = {
 
 /* Archive photos for the history section. Add scanned photos when members send them. */
 const ARCHIVE = [
-  { image:"https://drive.google.com/file/d/1cLEoWIA7qZbApuHmb1oRG1szN9uCAVE1/view?usp=sharing", caption:"Armilan koulu, 1980-luku" },
-  { image:"https://drive.google.com/file/d/1PCILceynd-FNFX7cWDlv60QqbmP8MCJV/view?usp=sharing", caption:"Prisman juniorit" }
+  { image:"", caption:"Armilan koulu, 1980-luku" },
+  { image:"", caption:"Prisman juniorit" }
 ];
 
 const LINKS = [
