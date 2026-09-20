@@ -26,7 +26,7 @@ const SETTINGS = {
 
   /* Google Form for membership applications. Must be a docs.google.com/forms/... or forms.gle link.
      The Asetukset tab in the sheet can override this. */
-  membershipForm: "",
+  membershipForm: "https://docs.google.com/forms/d/e/1FAIpQLSe3ePvZzamMiYmugdKnKO0xKxEKWSN6XosHkx95OkhnOrtOFg/viewform?usp=publish-editor",
 
   /* Membership fees shown on the homepage */
   priceNormal:  "200 €",
