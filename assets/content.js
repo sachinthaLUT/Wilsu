@@ -33,7 +33,7 @@ const SETTINGS = {
   priceForever: "50 €",
 
   /* Visitor statistics: a GoatCounter site code only (letters, numbers, hyphen), e.g. "saw". Empty = off. */
-  statsCode: "",
+  statsCode: "wilsu",
 
   /* Extra hostnames allowed to serve images. Photos should live in Google Drive; only add a host
      you trust, because anything listed here can load images (and see visitors' addresses). */
