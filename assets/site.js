@@ -304,6 +304,7 @@ function renderChrome(current){
       <div><h4>Pelaa</h4><ul><li><a href="index.html#pelaa">Ryhmät</a></li><li><a href="index.html#vuorot">Harjoitusajat</a></li><li><a href="index.html#paikat">Paikat ja kartat</a></li><li><a href="ukk.html">Usein kysyttyä</a></li><li><a href="index.html#jasenyys">Liity jäseneksi</a></li></ul></div>
       <div><h4>Seura</h4><ul><li><a href="uutiset.html">Uutiset</a></li><li><a href="tapahtumat.html">Tapahtumat ja tulokset</a></li><li><a href="galleria.html">Galleria</a></li><li><a href="hallitus.html">Hallitus</a></li><li><a href="index.html#seura">Historia</a></li><li><a href="index.html#linkit">Linkit</a></li><li><a href="kumppanit.html">Yhteistyökumppanit</a></li></ul></div>
       <div><h4>Seuraa</h4><ul><li><a href="https://www.instagram.com/wilsubadminton">Instagram</a></li><li><a href="https://www.facebook.com/profile.php?id=61566355680608">Facebook</a></li><li><a href="https://seurakauppa.intersport.fi/seurat/willimiehen-sulka">Seurakauppa</a></li></ul></div>
+      <div><h4>Ylläpitäjä</h4><ul><li><a href="https://drive.google.com/drive/folders/PASTE_FOLDER_ID">Hallintapaneeli</a></li></ul></div>
     </div>
     <div class="partners" id="partners"><span>Yhteistyössä</span>
       <a href="kumppanit.html">Yhteistyökumppanit</a></div>
