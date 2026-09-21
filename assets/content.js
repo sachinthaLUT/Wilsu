@@ -47,7 +47,7 @@ const SHEETS = {
   cancellations: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1308069276&single=true&output=csv",   // Peruutukset
   news:          "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1010366994&single=true&output=csv",   // Uutiset
   events:        "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1366506154&single=true&output=csv",   // Tapahtumat
-  gallery:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1366506154&single=true&output=csv",   // Galleria
+  gallery:       "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=672631943&single=true&output=csv",   // Galleria
   faq:           "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=675361153&single=true&output=csv",   // UKK
   board:         "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1160483995&single=true&output=csv",   // Hallitus
   sponsors:      "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-uY64otrGleyElNLoT-_lxYS3kTRIBmaKkqVaQKrMQBR_cPm7FVqRFG3NRb_2RENqufbqNdq5Kvxc/pub?gid=1999489781&single=true&output=csv",   // Kumppanit
