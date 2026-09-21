@@ -148,7 +148,7 @@ section.block{padding:clamp(4rem,9vw,7rem) 0}
 .join-card p{opacity:.85}
 
 footer.site{background:var(--ink);color:rgba(255,255,255,.82);padding:4rem 0 2rem;font-size:.95rem}
-footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:2rem}
+footer.site .cols{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:2rem}
 footer.site h4{color:var(--line);font:600 1rem var(--body);margin:0 0 .8rem}
 footer.site ul{list-style:none;margin:0;padding:0}
 footer.site li{margin:.35rem 0}
