@@ -32,6 +32,8 @@ const EN = {
   "Yhteistyössä": "Partners",
   "Tietosuojaseloste": "Privacy policy",
   "Etusivu": "Home",
+   "Ylläpitäjä": "Admin",
+  "Hallintapaneeli": "Dashboard",
 
   /* Page titles */
   "Willimiehen Sulka – sulkapalloa Lappeenrannassa": "Willimiehen Sulka – badminton in Lappeenranta",
