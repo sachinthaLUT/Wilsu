@@ -78,7 +78,7 @@ nav.main a:hover{opacity:1;text-decoration:underline;text-underline-offset:6px;t
 
 .hero{background:var(--deep);color:var(--line);position:relative;overflow:hidden}
 .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:2rem;align-items:center;min-height:min(86vh,760px);padding:3rem 0 7rem}
-.hero h1{font-size:clamp(3.2rem,8.5vw,7.2rem);font-weight:800;letter-spacing:-.045em;line-height:.92}
+.hero h1{font-size:clamp(2.4rem,5.5vw,4.6rem);font-weight:800;letter-spacing:-.03em;line-height:1}
 .hero p{font-size:1.2rem;max-width:34ch;opacity:.9;margin:1.5rem 0 2rem}
 .hero .actions{display:flex;flex-wrap:wrap;gap:.75rem}
 .hero-copy > *{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
