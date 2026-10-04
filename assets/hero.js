@@ -90,7 +90,7 @@ svg.innerHTML = `<defs>
 </defs>`;
 const L = { floor: g(svg, "g"), lines: g(svg, "g"), shadow: g(svg, "g"), far: g(svg, "g"), net: g(svg, "g"), near: g(svg, "g"), fx: g(svg, "g") };
 
-const floorPoly = g(L.floor, "polygon", { fill: "#12604A" });
+const floorPoly = g(L.floor, "polygon", { fill: "#5C9DD1"});
 const LW = 0.05;
 const LINES = [
   [-3.05,-6.7, 3.05,-6.7], [-3.05,6.7, 3.05,6.7], [-3.05,-6.7,-3.05,6.7], [3.05,-6.7,3.05,6.7],
@@ -104,8 +104,8 @@ const trail = g(L.far, "polyline", { fill: "none", stroke: "rgba(255,255,255,.35
 
 const netMesh = g(L.net, "polygon", { fill: "url(#mesh)" });
 const netTape = g(L.net, "polygon", { fill: "#FFFFFF" });
-const posts = [g(L.net, "polygon", { fill: "#F5D547" }), g(L.net, "polygon", { fill: "#F5D547" })];
-const postCaps = [g(L.net, "ellipse", { fill: "#F5D547" }), g(L.net, "ellipse", { fill: "#F5D547" })];
+const posts = [g(L.net, "polygon", { fill: "#FFFFFF" }), g(L.net, "polygon", { fill: "#FFFFFF" })];
+const postCaps = [g(L.net, "ellipse", { fill: "#FFFFFF" }), g(L.net, "ellipse", { fill: "#FFFFFF" })];
 
 const shuttle = g(L.near, "g");
 const skirtBack = g(shuttle, "polygon", { fill: "url(#skirt)", stroke: "#B9C6C0", "stroke-width": .6, "stroke-linejoin": "round" });
