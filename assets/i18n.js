@@ -47,8 +47,7 @@ const EN = {
   "Sivua ei löytynyt – Willimiehen Sulka": "Page not found – Willimiehen Sulka",
 
   /* Homepage: hero and next session */
-  "Tule": "Step",
-  "kentälle.": "on court.",
+  "Sulkapalloa Lappeenrannassa": "Badminton in Lappeenranta",
   "Willimiehen Sulka on lappeenrantalainen sulkapalloseura junioreille, harrastajille ja kilpapelaajille.": "Willimiehen Sulka is a badminton club in Lappeenranta for juniors, recreational players and competitive players.",
   "Katso harjoitusajat": "See training times",
   "Sulkapallo lentää verkon yli kentän päästä päähän": "A shuttlecock flying over the net from one end of the court to the other",
