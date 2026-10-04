@@ -531,3 +531,6 @@ nav.main a{font-size:.95rem}
 .partner-body h2{font-size:1.5rem;font-weight:800}
 .partner-body p{margin:.5rem 0 1rem;color:var(--muted);max-width:60ch}
 @media (max-width: 760px){ .partner{grid-template-columns:1fr;gap:1.25rem;text-align:left} }
+
+#uutiset{padding-bottom:clamp(2rem,4vw,3rem)}
+#pelaa{padding-top:clamp(2rem,4vw,3rem)}
